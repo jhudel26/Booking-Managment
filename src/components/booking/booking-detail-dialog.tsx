@@ -121,7 +121,7 @@ export function BookingDetailDialog({
           )}
         </div>
 
-        {isSuperAdmin && (
+        {hasApprovalAccess && (
           <DialogFooter className="flex-col sm:flex-row gap-2">
             {booking.status === "pending" && (
               <>
