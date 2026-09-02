@@ -16,11 +16,11 @@ export function StatCard({ title, value, description, className, trend, trendVal
   const getTrendIcon = () => {
     switch (trend) {
       case "up":
-        return <TrendingUp className="h-4 w-4 text-green-500" />;
+        return <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />;
       case "down":
-        return <TrendingDown className="h-4 w-4 text-red-500" />;
+        return <TrendingDown className="h-4 w-4 text-red-600 dark:text-red-400" />;
       case "neutral":
-        return <Minus className="h-4 w-4 text-gray-500" />;
+        return <Minus className="h-4 w-4 text-gray-600 dark:text-gray-400" />;
       default:
         return null;
     }
@@ -29,11 +29,11 @@ export function StatCard({ title, value, description, className, trend, trendVal
   const getTrendColor = () => {
     switch (trend) {
       case "up":
-        return "text-green-500";
+        return "text-green-600 dark:text-green-400";
       case "down":
-        return "text-red-500";
+        return "text-red-600 dark:text-red-400";
       case "neutral":
-        return "text-gray-500";
+        return "text-gray-600 dark:text-gray-400";
       default:
         return "text-muted-foreground";
     }
@@ -41,10 +41,10 @@ export function StatCard({ title, value, description, className, trend, trendVal
 
   return (
     <motion.div
-      whileHover={{ scale: 1.02, translateY: -2 }}
-      transition={{ duration: 0.2 }}
+      whileHover={{ scale: 1.01, translateY: -1 }}
+      transition={{ duration: 0.15 }}
     >
-      <Card className={cn("border-0 shadow-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900", className)}>
+      <Card className={cn("border shadow-sm", className)}>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
@@ -55,10 +55,10 @@ export function StatCard({ title, value, description, className, trend, trendVal
         </CardHeader>
         <CardContent>
           <motion.p
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+            transition={{ duration: 0.2 }}
+            className="text-3xl font-bold"
           >
             {value}
           </motion.p>

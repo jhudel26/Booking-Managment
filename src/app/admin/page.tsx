@@ -63,24 +63,24 @@ export default function AdminDashboard() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-8"
+      transition={{ duration: 0.3 }}
+      className="space-y-6"
     >
       <motion.div
-        initial={{ y: -20, opacity: 0 }}
+        initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+        transition={{ delay: 0.1, duration: 0.3 }}
         className="flex items-center justify-between"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-            <Circle className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <Circle className="w-4 h-4 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold">
             Rimreserve
           </h1>
         </div>
-        <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+        <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
           <Link href="/admin/calendar">
             <Calendar className="h-4 w-4 mr-2" />
             New Reservation
@@ -89,41 +89,32 @@ export default function AdminDashboard() {
       </motion.div>
 
       <motion.div
-        initial={{ y: 20, opacity: 0 }}
+        initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="grid grid-cols-1 sm:grid-cols-3 gap-6"
+        transition={{ delay: 0.2, duration: 0.3 }}
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4"
       >
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.2 }}
-        >
+        <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.15 }}>
           <StatCard title="My Reservations" value={bookings.length} />
         </motion.div>
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.2 }}
-        >
+        <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.15 }}>
           <StatCard title="Pending" value={pending} />
         </motion.div>
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.2 }}
-        >
+        <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.15 }}>
           <StatCard title="Approved" value={approved} />
         </motion.div>
       </motion.div>
 
       <motion.div
-        initial={{ y: 20, opacity: 0 }}
+        initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+        transition={{ delay: 0.3, duration: 0.3 }}
         className="grid grid-cols-1 lg:grid-cols-2 gap-6"
       >
         <motion.div
-          whileHover={{ scale: 1.01 }}
-          transition={{ duration: 0.2 }}
-          className="rounded-xl border bg-card p-6 shadow-lg"
+          whileHover={{ scale: 1.005 }}
+          transition={{ duration: 0.15 }}
+          className="rounded-lg border bg-card p-6 shadow-sm"
         >
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
             Reservation Status Distribution
@@ -155,10 +146,10 @@ export default function AdminDashboard() {
         </motion.div>
 
         <motion.div
-          whileHover={{ scale: 1.01 }}
-          transition={{ duration: 0.2 }}
+          whileHover={{ scale: 1.005 }}
+          transition={{ duration: 0.15 }}
         >
-          <h2 className="text-xl font-semibold mb-4">Recent Reservations</h2>
+          <h2 className="text-lg font-semibold mb-4">Recent Reservations</h2>
           <BookingTable
             bookings={bookings.slice(0, 10)}
             onView={setSelectedBooking}
