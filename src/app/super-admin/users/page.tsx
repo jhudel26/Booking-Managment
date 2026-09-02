@@ -91,17 +91,27 @@ export default function UsersPage() {
   };
 
   const togglePermission = async (user: Profile, permission: string, value: boolean) => {
-    const res = await fetch(`/api/users/${user.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ [permission]: value }),
-    });
-    if (!res.ok) {
+    // Optimistic UI update
+    const updatedUsers = users.map(u => 
+      u.id === user.id ? { ...u, [permission]: value } : u
+    );
+    setUsers(updatedUsers);
+
+    try {
+      const res = await fetch(`/api/users/${user.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [permission]: value }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to update permission");
+      }
+      toast.success("Permission updated");
+    } catch (error) {
+      // Revert on error
       toast.error("Failed to update permission");
-      return;
+      await loadUsers();
     }
-    toast.success("Permission updated");
-    await loadUsers();
   };
 
   const resetPassword = async (userId: string) => {

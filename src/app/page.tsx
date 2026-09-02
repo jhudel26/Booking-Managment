@@ -65,17 +65,15 @@ export default function HomePage() {
 
       <main className="container mx-auto px-4 py-8 space-y-8 flex-1">
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Rimreserve Booking</h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">
-            View availability and see scheduled bookings. Select a date to view the daily schedule.
-          </p>
+          <h2 className="text-3xl font-bold tracking-tight">RIM|RESERVER</h2>
+          <h3 className="text-xl font-semibold tracking-tight text-primary">BASKETBALL COURT BOOKING SYSTEM</h3>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
-          <Card className="h-full">
-            <CardContent className="p-6 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[600px] lg:min-h-[700px]">
+          <Card className="h-full min-h-[600px] lg:min-h-[700px]">
+            <CardContent className="p-6 h-full min-h-[600px] lg:min-h-[700px]">
               {loading ? (
-                <Skeleton className="h-96 w-full" />
+                <Skeleton className="h-[600px] lg:h-[700px] w-full" />
               ) : (
                 <CalendarView
                   selectedDate={selectedDate}
@@ -91,6 +89,10 @@ export default function HomePage() {
             bookings={bookings}
             loading={loading}
           />
+        </div>
+
+        <div className="text-center text-muted-foreground max-w-lg mx-auto">
+          <p>View availability and see scheduled bookings. Select a date to view the daily schedule.</p>
         </div>
       </main>
 
