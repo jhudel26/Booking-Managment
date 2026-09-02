@@ -49,7 +49,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <h1 className="text-lg font-bold">Rimreserve</h1>
@@ -59,19 +59,11 @@ export default function HomePage() {
               <span className="font-semibold text-primary">{formatCurrency(pricePerHour)}/hr</span>
             </div>
             <ThemeToggle />
-            {!isAuthenticated && (
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/login">
-                  <LogIn className="h-4 w-4 mr-1" />
-                  Admin Login
-                </Link>
-              </Button>
-            )}
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 space-y-8">
+      <main className="container mx-auto px-4 py-8 space-y-8 flex-1">
         <div className="text-center space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Rimreserve Booking</h2>
           <p className="text-muted-foreground max-w-lg mx-auto">
@@ -79,11 +71,11 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card>
-            <CardContent className="p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+          <Card className="h-full">
+            <CardContent className="p-6 h-full">
               {loading ? (
-                <Skeleton className="h-80 w-full" />
+                <Skeleton className="h-96 w-full" />
               ) : (
                 <CalendarView
                   selectedDate={selectedDate}
@@ -102,7 +94,7 @@ export default function HomePage() {
         </div>
       </main>
 
-      <footer className="border-t py-2 text-center text-sm text-muted-foreground lg:py-6">
+      <footer className="border-t py-3 text-center text-sm text-muted-foreground shrink-0">
         <p>Rimreserve &copy; {new Date().getFullYear()}</p>
       </footer>
     </div>
