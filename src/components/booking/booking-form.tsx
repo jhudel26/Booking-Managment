@@ -9,10 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ClientOnly } from "@/components/ui/client-only";
 import { bookingCreateSchema, type BookingCreateInput } from "@/lib/validation/schemas";
 import { calculateTotalPrice, getBookingDuration } from "@/lib/booking/pricing";
 import { formatCurrency } from "@/lib/utils";
-import { formatDate, formatTime, generateTimeOptions } from "@/lib/booking/time";
+import { formatDate, generateTimeOptions } from "@/lib/booking/time";
 import { toast } from "sonner";
 
 interface BookingFormProps {
@@ -72,7 +73,9 @@ export function BookingForm({ date, pricePerHour, onSubmit, loading }: BookingFo
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label>Booking Date</Label>
-            <Input value={formatDate(date)} disabled />
+            <ClientOnly fallback={<Input value="Loading..." disabled />}>
+              <Input value={formatDate(date)} disabled />
+            </ClientOnly>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -84,7 +87,7 @@ export function BookingForm({ date, pricePerHour, onSubmit, loading }: BookingFo
                 </SelectTrigger>
                 <SelectContent>
                   {timeOptions.map((t) => (
-                    <SelectItem key={t} value={t}>{formatTime(t)}</SelectItem>
+                    <SelectItem key={t} value={t}>{t}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -101,7 +104,7 @@ export function BookingForm({ date, pricePerHour, onSubmit, loading }: BookingFo
                 </SelectTrigger>
                 <SelectContent>
                   {timeOptions.filter((t) => t > startTime).map((t) => (
-                    <SelectItem key={t} value={t}>{formatTime(t)}</SelectItem>
+                    <SelectItem key={t} value={t}>{t}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
