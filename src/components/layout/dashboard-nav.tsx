@@ -146,7 +146,7 @@ export const getPermissionBasedNavItems = (profile: Profile | null): NavItem[] =
   const items = [...adminNavItems];
   
   // Add booking management if they can approve bookings
-  if (profile.can_approve_bookings === true) {
+  if (profile.can_approve_bookings) {
     items.push({ 
       href: "/admin/bookings-management", 
       label: "Manage Bookings", 
@@ -155,7 +155,7 @@ export const getPermissionBasedNavItems = (profile: Profile | null): NavItem[] =
   }
   
   // Add user management if they can create admins
-  if (profile.can_create_admin === true) {
+  if (profile.can_create_admin) {
     items.push({ 
       href: "/admin/users", 
       label: "Manage Users", 
@@ -164,7 +164,7 @@ export const getPermissionBasedNavItems = (profile: Profile | null): NavItem[] =
   }
   
   // Add rate management if they can manage rates
-  if (profile.can_manage_rates === true) {
+  if (profile.can_manage_rates) {
     items.push({ 
       href: "/admin/settings", 
       label: "Manage Rates", 
