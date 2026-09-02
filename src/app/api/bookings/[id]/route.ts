@@ -65,20 +65,38 @@ async function handleBookingAction(
   action: "approved" | "rejected" | "cancelled",
   reason?: string
 ) {
+  console.log("=== Booking Action Start ===");
+  console.log("Action:", action, "ID:", id, "Reason:", reason);
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  console.log("User:", user?.id);
+
   if (!user) {
+    console.log("No user found");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
     .single();
 
-  if (!canApproveBooking(profile)) {
+  console.log("Profile:", profile);
+  console.log("Profile error:", profileError);
+
+  if (profileError || !profile) {
+    console.log("Profile fetch failed");
+    return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
+  }
+
+  const canApprove = canApproveBooking(profile);
+  console.log("Can approve booking:", canApprove);
+
+  if (!canApprove) {
+    console.log("Permission denied");
     return NextResponse.json({ error: "Forbidden - You don't have permission to approve bookings" }, { status: 403 });
   }
 
@@ -99,6 +117,8 @@ async function handleBookingAction(
     updateData.cancelled_at = now;
   }
 
+  console.log("Update data:", updateData);
+
   const { data, error } = await supabase
     .from("bookings")
     .update(updateData)
@@ -106,7 +126,10 @@ async function handleBookingAction(
     .select()
     .single();
 
+  console.log("Update result:", { data, error });
+
   if (error) {
+    console.log("Update error:", error);
     if (error.message.includes("conflict")) {
       return NextResponse.json(
         { error: "Cannot approve: time slot conflicts with another reservation" },
@@ -117,6 +140,7 @@ async function handleBookingAction(
   }
 
   await logAudit(`reservation_${action}`, "reservation", id, user.id, { reason });
+  console.log("=== Booking Action Success ===");
   return NextResponse.json(data);
 }
 
