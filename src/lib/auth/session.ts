@@ -13,7 +13,15 @@ export async function getProfile(): Promise<Profile | null> {
     .eq("id", user.id)
     .single();
 
-  return profile;
+  if (!profile) return null;
+
+  // Ensure permission fields exist (for backward compatibility)
+  return {
+    ...profile,
+    can_create_admin: profile.can_create_admin ?? false,
+    can_approve_bookings: profile.can_approve_bookings ?? false,
+    can_manage_rates: profile.can_manage_rates ?? false,
+  };
 }
 
 export async function requireProfile(): Promise<Profile> {
