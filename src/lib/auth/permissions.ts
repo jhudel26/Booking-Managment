@@ -29,10 +29,7 @@ export function getDashboardPath(role: UserRole, profile?: Partial<Profile> | nu
     case "super_admin":
       return "/super-admin";
     case "admin":
-      // Check if admin has super admin-like permissions
-      if (profile?.can_approve_bookings || profile?.can_create_admin || profile?.can_manage_rates) {
-        return "/super-admin";
-      }
+      // Admins always go to admin dashboard, regardless of permissions
       return "/admin";
     default:
       return "/";

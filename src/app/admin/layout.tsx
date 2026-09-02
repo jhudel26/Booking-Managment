@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { getProfile } from "@/lib/auth/session";
 import { canAccessAdmin } from "@/lib/auth/permissions";
-import { DashboardNav, adminNavItems } from "@/components/layout/dashboard-nav";
+import { DashboardNav, getPermissionBasedNavItems } from "@/components/layout/dashboard-nav";
+import type { LayoutProps } from "@/types/layout";
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const profile = await getProfile();
@@ -10,17 +11,16 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     redirect("/login");
   }
 
-  // Redirect to super-admin if they have elevated permissions
-  if (profile.role === "super_admin" || 
-      profile.can_approve_bookings || 
-      profile.can_create_admin || 
-      profile.can_manage_rates) {
+  // Only redirect actual super admins to super-admin dashboard
+  if (profile.role === "super_admin") {
     redirect("/super-admin");
   }
 
+  const navItems = getPermissionBasedNavItems(profile);
+
   return (
     <div className="min-h-screen">
-      <DashboardNav profile={profile} items={adminNavItems} title="Rimreserve Admin">
+      <DashboardNav profile={profile} items={navItems} title="Rimreserve Admin">
         {children}
       </DashboardNav>
     </div>

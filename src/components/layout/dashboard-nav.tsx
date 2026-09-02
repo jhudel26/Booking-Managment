@@ -139,3 +139,38 @@ export const superAdminNavItems: NavItem[] = [
   { href: "/super-admin/users", label: "Users", icon: <Users className="h-4 w-4" /> },
   { href: "/super-admin/settings", label: "Settings", icon: <Settings className="h-4 w-4" /> },
 ];
+
+export const getPermissionBasedNavItems = (profile: Profile | null): NavItem[] => {
+  if (!profile) return adminNavItems;
+  
+  const items = [...adminNavItems];
+  
+  // Add booking management if they can approve bookings
+  if (profile.can_approve_bookings) {
+    items.push({ 
+      href: "/admin/bookings-management", 
+      label: "Manage Bookings", 
+      icon: <ClipboardList className="h-4 w-4" /> 
+    });
+  }
+  
+  // Add user management if they can create admins
+  if (profile.can_create_admin) {
+    items.push({ 
+      href: "/admin/users", 
+      label: "Manage Users", 
+      icon: <Users className="h-4 w-4" /> 
+    });
+  }
+  
+  // Add rate management if they can manage rates
+  if (profile.can_manage_rates) {
+    items.push({ 
+      href: "/admin/settings", 
+      label: "Manage Rates", 
+      icon: <Settings className="h-4 w-4" /> 
+    });
+  }
+  
+  return items;
+};

@@ -91,8 +91,10 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="text-center text-muted-foreground max-w-lg mx-auto">
-          <p>View availability and see scheduled bookings. Select a date to view the daily schedule.</p>
+        <div className="text-center text-muted-foreground max-w-4xl mx-auto px-4">
+          <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">
+            View availability and see scheduled bookings. Select a date to view the daily schedule.
+          </p>
         </div>
       </main>
 
