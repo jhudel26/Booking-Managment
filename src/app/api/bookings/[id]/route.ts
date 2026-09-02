@@ -78,6 +78,8 @@ async function handleBookingAction(
     .eq("id", user.id)
     .single();
 
+  console.log("Booking action - User profile:", { userId: user.id, role: profile?.role, can_approve_bookings: profile?.can_approve_bookings });
+
   if (!canApproveBooking(profile)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -100,6 +102,8 @@ async function handleBookingAction(
     updateData.cancelled_at = now;
   }
 
+  console.log("Booking action - Update data:", updateData);
+
   const { data, error } = await serviceClient
     .from("bookings")
     .update(updateData)
@@ -108,13 +112,14 @@ async function handleBookingAction(
     .single();
 
   if (error) {
+    console.error("Booking action error:", error);
     if (error.message.includes("conflict")) {
       return NextResponse.json(
         { error: "Cannot approve: time slot conflicts with another reservation" },
         { status: 409 }
       );
     }
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message, details: error }, { status: 500 });
   }
 
   await logAudit(`reservation_${action}`, "reservation", id, user.id, { reason });
