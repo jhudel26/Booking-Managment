@@ -59,6 +59,14 @@ export function formatTime(time: string | null | undefined): string {
   }
 }
 
+export function formatTimeForDisplay(time: string): string {
+  const [hours, minutes] = time.split(":").map(Number);
+  const period = hours >= 12 ? "PM" : "AM";
+  const displayHours = hours % 12 || 12;
+  const displayMinutes = String(minutes).padStart(2, "0");
+  return `${displayHours}:${displayMinutes} ${period}`;
+}
+
 export function formatTimeRange(start: string | null | undefined, end: string | null | undefined): string {
   const startTime = formatTime(start);
   const endTime = formatTime(end);
@@ -91,6 +99,26 @@ export function generateTimeOptions(
     for (let m = 0; m < 60; m += intervalMinutes) {
       if (h === endHour && m > 0) break;
       options.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+    }
+  }
+  return options;
+}
+
+export function generateTimeOptions12Hour(
+  startHour = 6,
+  endHour = 22,
+  intervalMinutes = 30
+): { label: string; value: string }[] {
+  const options: { label: string; value: string }[] = [];
+  for (let h = startHour; h <= endHour; h++) {
+    for (let m = 0; m < 60; m += intervalMinutes) {
+      if (h === endHour && m > 0) break;
+      const value = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      const period = h >= 12 ? "PM" : "AM";
+      const displayHours = h % 12 || 12;
+      const displayMinutes = String(m).padStart(2, "0");
+      const label = `${displayHours}:${displayMinutes} ${period}`;
+      options.push({ label, value });
     }
   }
   return options;

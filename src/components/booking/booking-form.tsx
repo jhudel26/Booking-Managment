@@ -13,7 +13,7 @@ import { ClientOnly } from "@/components/ui/client-only";
 import { bookingCreateSchema, type BookingCreateInput } from "@/lib/validation/schemas";
 import { calculateTotalPrice, getBookingDuration } from "@/lib/booking/pricing";
 import { formatCurrency } from "@/lib/utils";
-import { formatDate, generateTimeOptions } from "@/lib/booking/time";
+import { formatDate, generateTimeOptions12Hour } from "@/lib/booking/time";
 import { toast } from "sonner";
 
 interface BookingFormProps {
@@ -24,7 +24,7 @@ interface BookingFormProps {
 }
 
 export function BookingForm({ date, pricePerHour, onSubmit, loading }: BookingFormProps) {
-  const timeOptions = generateTimeOptions();
+  const timeOptions = generateTimeOptions12Hour();
 
   const {
     register,
@@ -87,7 +87,7 @@ export function BookingForm({ date, pricePerHour, onSubmit, loading }: BookingFo
                 </SelectTrigger>
                 <SelectContent>
                   {timeOptions.map((t) => (
-                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -103,8 +103,8 @@ export function BookingForm({ date, pricePerHour, onSubmit, loading }: BookingFo
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {timeOptions.filter((t) => t > startTime).map((t) => (
-                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                  {timeOptions.filter((t) => t.value > startTime).map((t) => (
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

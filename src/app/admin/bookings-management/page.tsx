@@ -1,27 +1,38 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { BookingDetailDialog } from "@/components/booking/booking-detail-dialog";
 import { ClientOnly } from "@/components/ui/client-only";
-import { STATUS_LABELS, type Booking } from "@/types";
+import { STATUS_LABELS, type Booking, type Profile } from "@/types";
 import { formatDate, formatTimeRange } from "@/lib/booking/time";
-import { Filter, Download } from "lucide-react";
+import { Download } from "lucide-react";
 
 export default function AdminBookingsManagementPage() {
-  const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected" | "cancelled">("all");
+  const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     loadBookings();
+    loadProfile();
   }, [filter]);
+
+  const loadProfile = async () => {
+    try {
+      const res = await fetch("/api/profile");
+      if (res.ok) {
+        setProfile(await res.json());
+      }
+    } catch (error) {
+      console.error("Failed to load profile:", error);
+    }
+  };
 
   const loadBookings = async () => {
     try {
@@ -165,6 +176,7 @@ export default function AdminBookingsManagementPage() {
           booking={selectedBooking}
           open={!!selectedBooking}
           onOpenChange={(open) => !open && setSelectedBooking(null)}
+          canApprove={profile?.can_approve_bookings || false}
           onApprove={async (id, reason) => {
             const res = await fetch(`/api/bookings/${id}`, {
               method: "PATCH",
