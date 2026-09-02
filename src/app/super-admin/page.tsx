@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { BookingTable } from "@/components/booking/booking-table";
 import { BookingDetailDialog } from "@/components/booking/booking-detail-dialog";
+import { AdminPermissionsManager } from "@/components/admin/admin-permissions-manager";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
 import type { Booking, DashboardStats } from "@/types";
@@ -268,6 +269,14 @@ export default function SuperAdminDashboard() {
             onView={setSelectedBooking}
           />
         )}
+      </motion.div>
+
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.3 }}
+      >
+        <AdminPermissionsManager />
       </motion.div>
 
       <BookingDetailDialog
