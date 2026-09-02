@@ -12,17 +12,24 @@ import { formatCurrency } from "@/lib/utils";
 import { getDateString } from "@/lib/booking/time";
 import type { Booking } from "@/types";
 import { LogIn } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState(getDateString(new Date()));
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [pricePerHour, setPricePerHour] = useState(200);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     async function loadData() {
       setLoading(true);
       try {
+        // Check authentication status
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        setIsAuthenticated(!!user);
+
         const [bookingsRes, priceRes] = await Promise.all([
           fetch("/api/bookings"),
           fetch("/api/settings/price"),
@@ -47,13 +54,19 @@ export default function HomePage() {
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <h1 className="text-lg font-bold">Rimreserve</h1>
           <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-2 mr-4">
+              <span className="text-sm text-muted-foreground">Current Rate:</span>
+              <span className="font-semibold text-primary">{formatCurrency(pricePerHour)}/hr</span>
+            </div>
             <ThemeToggle />
-            <Button variant="outline" size="sm" asChild>
-              <Link href="/login">
-                <LogIn className="h-4 w-4 mr-1" />
-                Admin Login
-              </Link>
-            </Button>
+            {!isAuthenticated && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/login">
+                  <LogIn className="h-4 w-4 mr-1" />
+                  Admin Login
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -64,12 +77,6 @@ export default function HomePage() {
           <p className="text-muted-foreground max-w-lg mx-auto">
             View availability and see scheduled bookings. Select a date to view the daily schedule.
           </p>
-          <Card className="inline-block mt-4">
-            <CardContent className="py-3 px-6">
-              <p className="text-sm text-muted-foreground">Current Rate</p>
-              <p className="text-2xl font-bold text-primary">{formatCurrency(pricePerHour)} <span className="text-sm font-normal text-muted-foreground">/ hour</span></p>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -95,7 +102,7 @@ export default function HomePage() {
         </div>
       </main>
 
-      <footer className="border-t py-6 text-center text-sm text-muted-foreground">
+      <footer className="border-t py-2 text-center text-sm text-muted-foreground lg:py-6">
         <p>Rimreserve &copy; {new Date().getFullYear()}</p>
       </footer>
     </div>

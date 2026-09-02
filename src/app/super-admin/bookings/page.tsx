@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Booking } from "@/types";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 
 const PAGE_SIZE = 10;
 
@@ -51,6 +51,30 @@ export default function SuperAdminBookingsPage() {
     setSelectedBooking(null);
   };
 
+  const handleExport = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (statusFilter !== "all") params.append("status", statusFilter);
+      
+      const res = await fetch(`/api/bookings/export?${params.toString()}`);
+      if (!res.ok) throw new Error("Failed to export");
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `rimreserve-reservations-${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast.success("Export successful");
+    } catch (error) {
+      toast.error("Failed to export reservations");
+    }
+  };
+
   let filtered = bookings.filter((b) => {
     const matchesSearch =
       !search ||
@@ -89,11 +113,17 @@ export default function SuperAdminBookingsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Rimreserve Management</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Rimreserve Management</h1>
+        <Button onClick={handleExport} variant="outline">
+          <Download className="h-4 w-4 mr-2" />
+          Export Excel
+        </Button>
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
         <Input
-          placeholder="Search bookings..."
+          placeholder="Search reservations..."
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(0); }}
           className="sm:max-w-xs"

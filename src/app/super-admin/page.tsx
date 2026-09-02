@@ -16,6 +16,8 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  LineChart,
+  Line,
 } from "recharts";
 
 export default function SuperAdminDashboard() {
@@ -23,15 +25,21 @@ export default function SuperAdminDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [pricePerHour, setPricePerHour] = useState(200);
 
   const loadData = async () => {
     try {
-      const [statsRes, bookingsRes] = await Promise.all([
+      const [statsRes, bookingsRes, priceRes] = await Promise.all([
         fetch("/api/dashboard/stats"),
         fetch("/api/bookings"),
+        fetch("/api/settings/price"),
       ]);
       if (statsRes.ok) setStats(await statsRes.json());
       if (bookingsRes.ok) setBookings(await bookingsRes.json());
+      if (priceRes.ok) {
+        const priceData = await priceRes.json();
+        setPricePerHour(priceData.price_per_hour);
+      }
     } finally {
       setLoading(false);
     }
@@ -75,6 +83,31 @@ export default function SuperAdminDashboard() {
     { name: "Cancelled", value: stats?.cancelled || 0 },
   ];
 
+  // Generate booking overview chart data (monthly bookings)
+  const generateOverviewData = () => {
+    const monthlyData: Record<string, number> = {};
+    bookings.forEach((booking) => {
+      const month = booking.booking_date.substring(0, 7); // YYYY-MM
+      monthlyData[month] = (monthlyData[month] || 0) + 1;
+    });
+    
+    return Object.entries(monthlyData)
+      .map(([month, count]) => ({ month, count }))
+      .sort((a, b) => a.month.localeCompare(b.month))
+      .slice(-6); // Last 6 months
+  };
+
+  const overviewData = generateOverviewData();
+
+  // Today's bookings data
+  const today = new Date().toISOString().split('T')[0];
+  const todayBookings = bookings.filter((b) => b.booking_date === today);
+  const todayChartData = todayBookings.map((booking) => ({
+    time: booking.start_time,
+    name: booking.requester_name,
+    status: booking.status,
+  }));
+
   const pendingBookings = bookings.filter((b) => b.status === "pending").slice(0, 5);
 
   return (
@@ -108,6 +141,54 @@ export default function SuperAdminDashboard() {
               <Bar dataKey="value" fill="#2563eb" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="rounded-xl border bg-card p-6">
+          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+            Bookings Overview (Last 6 Months)
+          </h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={overviewData}>
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+              <XAxis dataKey="month" className="text-xs" />
+              <YAxis className="text-xs" />
+              <Tooltip />
+              <Line type="monotone" dataKey="count" stroke="#2563eb" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="rounded-xl border bg-card p-6">
+          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
+            Today's Bookings
+          </h3>
+          <div className="mb-4">
+            <p className="text-sm text-muted-foreground">Current Rate: {formatCurrency(pricePerHour)}/hr</p>
+            <p className="text-sm text-muted-foreground">Effective: Sep 2, 2026</p>
+          </div>
+          {todayBookings.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-8">No bookings today</p>
+          ) : (
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {todayBookings.map((booking) => (
+                <div key={booking.id} className="flex items-center justify-between p-2 border rounded">
+                  <div>
+                    <p className="text-sm font-medium">{booking.requester_name}</p>
+                    <p className="text-xs text-muted-foreground">{booking.start_time} - {booking.end_time}</p>
+                  </div>
+                  <span className={`text-xs px-2 py-1 rounded ${
+                    booking.status === 'approved' ? 'bg-green-100 text-green-800' :
+                    booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {booking.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

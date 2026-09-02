@@ -28,22 +28,27 @@ function NavLinks({
 }) {
   return (
     <>
-      {items.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          onClick={onNavigate}
-          className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-            pathname === item.href || pathname.startsWith(item.href + "/")
-              ? "bg-primary/10 text-primary"
-              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-          )}
-        >
-          {item.icon}
-          {item.label}
-        </Link>
-      ))}
+      {items.map((item) => {
+        // Only highlight on exact match - this prevents parent highlighting when on child pages
+        const isActive = pathname === item.href;
+        
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            className={cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+              isActive
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            )}
+          >
+            {item.icon}
+            {item.label}
+          </Link>
+        );
+      })}
     </>
   );
 }
