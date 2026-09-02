@@ -223,9 +223,9 @@ export default function UsersPage() {
                         <Shield className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">Admin Permissions</span>
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor={`create-admin-${user.id}`} className="text-sm">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between gap-4">
+                          <Label htmlFor={`create-admin-${user.id}`} className="text-sm cursor-pointer">
                             Create Admin
                           </Label>
                           <Switch
@@ -234,8 +234,8 @@ export default function UsersPage() {
                             onCheckedChange={(checked) => togglePermission(user, 'can_create_admin', checked)}
                           />
                         </div>
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor={`approve-bookings-${user.id}`} className="text-sm">
+                        <div className="flex items-center justify-between gap-4">
+                          <Label htmlFor={`approve-bookings-${user.id}`} className="text-sm cursor-pointer">
                             Approve Bookings
                           </Label>
                           <Switch
@@ -244,8 +244,8 @@ export default function UsersPage() {
                             onCheckedChange={(checked) => togglePermission(user, 'can_approve_bookings', checked)}
                           />
                         </div>
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor={`manage-rates-${user.id}`} className="text-sm">
+                        <div className="flex items-center justify-between gap-4">
+                          <Label htmlFor={`manage-rates-${user.id}`} className="text-sm cursor-pointer">
                             Manage Rates
                           </Label>
                           <Switch
