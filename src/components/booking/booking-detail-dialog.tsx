@@ -22,6 +22,7 @@ interface BookingDetailDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   isSuperAdmin?: boolean;
+  canApprove?: boolean;
   onApprove?: (id: string, reason?: string) => Promise<void>;
   onReject?: (id: string, reason?: string) => Promise<void>;
   onCancel?: (id: string, reason?: string) => Promise<void>;
@@ -32,12 +33,15 @@ export function BookingDetailDialog({
   open,
   onOpenChange,
   isSuperAdmin,
+  canApprove,
   onApprove,
   onReject,
   onCancel,
 }: BookingDetailDialogProps) {
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const hasApprovalAccess = isSuperAdmin || canApprove;
 
   if (!booking) return null;
 
@@ -100,7 +104,7 @@ export function BookingDetailDialog({
             </>
           )}
 
-          {isSuperAdmin && booking.status === "pending" && (
+          {hasApprovalAccess && booking.status === "pending" && (
             <>
               <Separator />
               <div className="space-y-2">

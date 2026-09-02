@@ -6,7 +6,7 @@ import { BookingDetailDialog } from "@/components/booking/booking-detail-dialog"
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Booking } from "@/types";
+import type { Booking, Profile } from "@/types";
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -14,12 +14,16 @@ export default function AdminBookingsPage() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/bookings?mine=true");
-        if (res.ok) setBookings(await res.json());
+        const profileRes = await fetch("/api/profile");
+        if (profileRes.ok) setProfile(await profileRes.json());
+        
+        const bookingsRes = await fetch("/api/bookings?mine=true");
+        if (bookingsRes.ok) setBookings(await bookingsRes.json());
       } finally {
         setLoading(false);
       }
@@ -35,6 +39,45 @@ export default function AdminBookingsPage() {
     const matchesStatus = statusFilter === "all" || b.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const handleApprove = async (id: string, reason?: string) => {
+    const res = await fetch(`/api/bookings/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "approved", reason }),
+    });
+    if (res.ok) {
+      setSelectedBooking(null);
+      const bookingsRes = await fetch("/api/bookings?mine=true");
+      if (bookingsRes.ok) setBookings(await bookingsRes.json());
+    }
+  };
+
+  const handleReject = async (id: string, reason?: string) => {
+    const res = await fetch(`/api/bookings/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "rejected", reason }),
+    });
+    if (res.ok) {
+      setSelectedBooking(null);
+      const bookingsRes = await fetch("/api/bookings?mine=true");
+      if (bookingsRes.ok) setBookings(await bookingsRes.json());
+    }
+  };
+
+  const handleCancel = async (id: string, reason?: string) => {
+    const res = await fetch(`/api/bookings/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "cancelled", reason }),
+    });
+    if (res.ok) {
+      setSelectedBooking(null);
+      const bookingsRes = await fetch("/api/bookings?mine=true");
+      if (bookingsRes.ok) setBookings(await bookingsRes.json());
+    }
+  };
 
   if (loading) {
     return (
@@ -76,6 +119,10 @@ export default function AdminBookingsPage() {
         booking={selectedBooking}
         open={!!selectedBooking}
         onOpenChange={(open) => !open && setSelectedBooking(null)}
+        canApprove={profile?.can_approve_bookings || false}
+        onApprove={handleApprove}
+        onReject={handleReject}
+        onCancel={handleCancel}
       />
     </div>
   );
