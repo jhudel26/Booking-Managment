@@ -44,9 +44,16 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   const body = await request.json();
   const serviceClient = await createServiceClient();
 
+  // Map 'reason' to 'notes' if present
+  const updateData: Record<string, unknown> = { ...body };
+  if (body.reason !== undefined) {
+    updateData.notes = body.reason;
+    delete updateData.reason;
+  }
+
   const { data, error } = await serviceClient
     .from("bookings")
-    .update(body)
+    .update(updateData)
     .eq("id", id)
     .select()
     .single();
@@ -55,7 +62,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  await logAudit("reservation_edited", "reservation", id, user.id, body);
+  await logAudit("reservation_edited", "reservation", id, user.id, updateData);
 
   return NextResponse.json(data);
 }
@@ -65,83 +72,84 @@ async function handleBookingAction(
   action: "approved" | "rejected" | "cancelled",
   reason?: string
 ) {
-  console.log("=== Booking Action Start ===");
-  console.log("Action:", action, "ID:", id, "Reason:", reason);
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  console.log("User:", user?.id);
-
-  if (!user) {
-    console.log("No user found");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  console.log("Profile:", profile);
-  console.log("Profile error:", profileError);
-
-  if (profileError || !profile) {
-    console.log("Profile fetch failed");
-    return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
-  }
-
-  const canApprove = canApproveBooking(profile);
-  console.log("Can approve booking:", canApprove);
-
-  if (!canApprove) {
-    console.log("Permission denied");
-    return NextResponse.json({ error: "Forbidden - You don't have permission to approve bookings" }, { status: 403 });
-  }
-
-  const now = new Date().toISOString();
-
-  const updateData: Record<string, unknown> = {
-    status: action,
-    notes: reason || undefined,
-  };
-
-  if (action === "approved") {
-    updateData.approved_by = user.id;
-    updateData.approved_at = now;
-  } else if (action === "rejected") {
-    updateData.rejected_at = now;
-    updateData.approved_by = user.id;
-  } else if (action === "cancelled") {
-    updateData.cancelled_at = now;
-  }
-
-  console.log("Update data:", updateData);
-
-  const { data, error } = await supabase
-    .from("bookings")
-    .update(updateData)
-    .eq("id", id)
-    .select()
-    .single();
-
-  console.log("Update result:", { data, error });
-
-  if (error) {
-    console.log("Update error:", error);
-    if (error.message.includes("conflict")) {
-      return NextResponse.json(
-        { error: "Cannot approve: time slot conflicts with another reservation" },
-        { status: 409 }
-      );
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    return NextResponse.json({ error: error.message, details: error }, { status: 500 });
-  }
 
-  await logAudit(`reservation_${action}`, "reservation", id, user.id, { reason });
-  console.log("=== Booking Action Success ===");
-  return NextResponse.json(data);
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError || !profile) {
+      return NextResponse.json({ error: "Failed to fetch profile", details: profileError }, { status: 500 });
+    }
+
+    const canApprove = canApproveBooking(profile);
+
+    if (!canApprove) {
+      return NextResponse.json({ 
+        error: "Forbidden - You don't have permission to approve bookings",
+        debug: { profile: { id: profile.id, role: profile.role, can_approve_bookings: profile.can_approve_bookings } }
+      }, { status: 403 });
+    }
+
+    const now = new Date().toISOString();
+
+    const updateData: Record<string, unknown> = {
+      status: action,
+    };
+
+    if (reason && reason.trim()) {
+      updateData.notes = reason;
+    }
+
+    if (action === "approved") {
+      updateData.approved_by = user.id;
+      updateData.approved_at = now;
+    } else if (action === "rejected") {
+      updateData.rejected_at = now;
+      updateData.approved_by = user.id;
+    } else if (action === "cancelled") {
+      updateData.cancelled_at = now;
+    }
+
+    // Use serviceClient like the PATCH function does
+    const serviceClient = await createServiceClient();
+    const { data, error } = await serviceClient
+      .from("bookings")
+      .update(updateData)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      if (error.message.includes("conflict")) {
+        return NextResponse.json(
+          { error: "Cannot approve: time slot conflicts with an existing reservation" },
+          { status: 409 }
+        );
+      }
+      return NextResponse.json({ 
+        error: error.message, 
+        details: error,
+        debug: { updateData, userId: user.id }
+      }, { status: 500 });
+    }
+
+    await logAudit(`reservation_${action}`, "reservation", id, user.id, { reason });
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : "Unknown error",
+      details: error
+    }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request, { params }: RouteParams) {
