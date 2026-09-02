@@ -57,7 +57,8 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Database error updating profile:", error);
+    return NextResponse.json({ error: error.message, details: error }, { status: 500 });
   }
 
   // Log permission changes
