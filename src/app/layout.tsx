@@ -46,7 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <QueryProvider>
-            <SiteStatusProvider minDisplayMs={900}>
+            <SiteStatusProvider minDisplayMs={2000}>
               <HydrationLoader>
                 {children}
               </HydrationLoader>

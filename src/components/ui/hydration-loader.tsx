@@ -28,11 +28,11 @@ export function HydrationLoader({ children }: HydrationLoaderProps) {
 
     async function runBootChecks() {
       try {
-        await sleep(120);
+        await sleep(320);
         if (cancelled) return;
         markStageCompleted("hydrating");
 
-        setStageProgress(0.15);
+        setStageProgress(0.12);
 
         const pricePromise = fetch("/api/settings/price", {
           method: "GET",
@@ -47,17 +47,19 @@ export function HydrationLoader({ children }: HydrationLoaderProps) {
           return data as { price_per_hour: number; history: unknown[] };
         });
 
-        for (let i = 0; i < 4; i++) {
-          await sleep(90);
+        for (let i = 0; i < 5; i++) {
+          await sleep(220);
           if (cancelled) return;
-          setStageProgress(0.15 + (i + 1) * 0.18);
+          setStageProgress(0.12 + (i + 1) * 0.16);
         }
 
         await pricePromise;
         if (cancelled) return;
+        await sleep(200);
+        if (cancelled) return;
         markStageCompleted("connecting");
 
-        setStageProgress(0.1);
+        setStageProgress(0.08);
 
         const today = new Date();
         const y = today.getFullYear();
@@ -81,24 +83,29 @@ export function HydrationLoader({ children }: HydrationLoaderProps) {
           return data;
         });
 
-        for (let i = 0; i < 5; i++) {
-          await sleep(90);
+        for (let i = 0; i < 6; i++) {
+          await sleep(220);
           if (cancelled) return;
-          setStageProgress(0.1 + (i + 1) * 0.17);
+          setStageProgress(0.08 + (i + 1) * 0.14);
         }
 
         await bookingsPromise;
         if (cancelled) return;
+        await sleep(200);
+        if (cancelled) return;
         markStageCompleted("loading_data");
 
-        setStageProgress(0.2);
-        await sleep(160);
+        setStageProgress(0.18);
+        await sleep(280);
         if (cancelled) return;
-        setStageProgress(0.6);
-        await sleep(140);
+        setStageProgress(0.52);
+        await sleep(260);
+        if (cancelled) return;
+        setStageProgress(0.82);
+        await sleep(200);
         if (cancelled) return;
         setStageProgress(1);
-        await sleep(80);
+        await sleep(180);
         if (cancelled) return;
 
         markStageCompleted("finalizing");
