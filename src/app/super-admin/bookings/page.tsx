@@ -89,7 +89,7 @@ export default function SuperAdminBookingsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Booking Management</h1>
+      <h1 className="text-2xl font-bold">Rimreserve Management</h1>
 
       <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
         <Input

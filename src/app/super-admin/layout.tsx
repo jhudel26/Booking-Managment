@@ -12,7 +12,7 @@ export default async function SuperAdminLayout({ children }: LayoutProps<"/super
 
   return (
     <div className="min-h-screen">
-      <DashboardNav profile={profile} items={superAdminNavItems} title="Super Admin">
+      <DashboardNav profile={profile} items={superAdminNavItems} title="Rimreserve Super Admin">
         {children}
       </DashboardNav>
     </div>

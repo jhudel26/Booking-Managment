@@ -58,7 +58,7 @@ export function BookingDetailDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Booking #{booking.booking_number}</DialogTitle>
+          <DialogTitle>Reservation #{booking.booking_number}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -125,7 +125,7 @@ export function BookingDetailDialog({
                 onClick={() => handleAction("cancel")}
                 disabled={loading}
               >
-                Cancel
+                Cancel Reservation
               </Button>
             )}
           </DialogFooter>

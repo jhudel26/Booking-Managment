@@ -114,7 +114,7 @@ export default function SuperAdminDashboard() {
       <div>
         <h2 className="text-lg font-semibold mb-4">Pending Approvals</h2>
         {pendingBookings.length === 0 ? (
-          <p className="text-muted-foreground text-sm">No pending bookings.</p>
+          <p className="text-muted-foreground text-sm">No pending reservations.</p>
         ) : (
           <BookingTable
             bookings={pendingBookings}

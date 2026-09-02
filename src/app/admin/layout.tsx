@@ -16,7 +16,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
 
   return (
     <div className="min-h-screen">
-      <DashboardNav profile={profile} items={adminNavItems} title="Admin Portal">
+      <DashboardNav profile={profile} items={adminNavItems} title="Rimreserve Admin">
         {children}
       </DashboardNav>
     </div>

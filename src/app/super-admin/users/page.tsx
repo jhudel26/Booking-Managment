@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ClientOnly } from "@/components/ui/client-only";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ROLE_LABELS, type Profile } from "@/types";
 import { formatDate } from "@/lib/booking/time";
@@ -146,51 +147,53 @@ export default function UsersPage() {
       </div>
 
       <div className="space-y-3">
-        {users.length === 0 ? (
-          <p className="text-muted-foreground text-center py-8">No admin users found.</p>
-        ) : (
-          users.map((user) => (
-            <Card key={user.id}>
-              <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold">{user.full_name || user.email}</p>
-                    <Badge variant="secondary">{ROLE_LABELS[user.role]}</Badge>
-                    {!user.is_active && <Badge variant="destructive">Disabled</Badge>}
+        <ClientOnly fallback={<Skeleton className="h-64 w-full" />}>
+          {users.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">No admin users found.</p>
+          ) : (
+            users.map((user) => (
+              <Card key={user.id}>
+                <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold">{user.full_name || user.email}</p>
+                      <Badge variant="secondary">{ROLE_LABELS[user.role]}</Badge>
+                      {!user.is_active && <Badge variant="destructive">Disabled</Badge>}
+                    </div>
+                    <p className="text-sm text-muted-foreground">{user.email}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Created {user.created_at ? formatDate(user.created_at) : "N/A"}
+                    </p>
                   </div>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
-                  <p className="text-xs text-muted-foreground">
-                    Created {user.created_at ? formatDate(user.created_at) : "N/A"}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  {user.role !== "super_admin" && (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => toggleActive(user)}
-                      >
-                        {user.is_active ? (
-                          <><UserX className="h-4 w-4 mr-1" /> Disable</>
-                        ) : (
-                          <><UserCheck className="h-4 w-4 mr-1" /> Enable</>
-                        )}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => resetPassword(user.id)}
-                      >
-                        <KeyRound className="h-4 w-4 mr-1" /> Reset Password
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
+                  <div className="flex gap-2">
+                    {user.role !== "super_admin" && (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => toggleActive(user)}
+                        >
+                          {user.is_active ? (
+                            <><UserX className="h-4 w-4 mr-1" /> Disable</>
+                          ) : (
+                            <><UserCheck className="h-4 w-4 mr-1" /> Enable</>
+                          )}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => resetPassword(user.id)}
+                        >
+                          <KeyRound className="h-4 w-4 mr-1" /> Reset Password
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </ClientOnly>
       </div>
     </div>
   );

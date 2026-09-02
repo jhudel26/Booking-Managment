@@ -17,14 +17,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Booking Calendar | Reserve Your Time Slot",
-    template: "%s | Booking Management",
+    default: "Rimreserve | Professional Booking Management",
+    template: "%s | Rimreserve",
   },
   description:
-    "View availability and book time slots. Professional booking management system with real-time calendar.",
+    "Rimreserve - Professional booking management system. View availability and book time slots with real-time calendar.",
   openGraph: {
-    title: "Booking Calendar",
-    description: "View availability and book time slots online.",
+    title: "Rimreserve",
+    description: "Professional booking management system for time slot reservations.",
     type: "website",
   },
   robots: {

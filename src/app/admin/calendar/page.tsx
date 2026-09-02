@@ -62,7 +62,7 @@ export default function AdminCalendarPage() {
 
     if (!res.ok) {
       const err = await res.json();
-      throw new Error(err.error || "Failed to create booking");
+      throw new Error(err.error || "Failed to create reservation");
     }
 
     await reloadData();
@@ -71,7 +71,7 @@ export default function AdminCalendarPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Booking Calendar</h1>
+      <h1 className="text-2xl font-bold">Rimreserve Calendar</h1>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <div className="space-y-6">

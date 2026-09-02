@@ -74,8 +74,8 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Admin Login</CardTitle>
-            <CardDescription>Sign in to manage bookings</CardDescription>
+            <CardTitle className="text-2xl">Rimreserve Admin</CardTitle>
+            <CardDescription>Sign in to manage Rimreserve</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

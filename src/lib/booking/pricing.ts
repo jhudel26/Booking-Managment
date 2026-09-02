@@ -88,5 +88,5 @@ export function getBookingDuration(start: string, end: string): number {
 
 export function generateBookingNumber(date: string, sequence: number): string {
   const dateStr = date.replace(/-/g, "");
-  return `BK-${dateStr}-${String(sequence).padStart(3, "0")}`;
+  return `RR-${dateStr}-${String(sequence).padStart(3, "0")}`;
 }

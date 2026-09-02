@@ -13,39 +13,56 @@ export function fromManilaTime(date: Date): Date {
 export function formatDate(date: string | Date | null | undefined, pattern = "MMMM d, yyyy"): string {
   if (!date) return "N/A";
   
-  let d: Date;
-  if (typeof date === "string") {
-    // Try parsing as ISO date first, then as yyyy-MM-dd
-    const isoDate = new Date(date);
-    if (!isNaN(isoDate.getTime())) {
-      d = isoDate;
+  try {
+    let d: Date;
+    if (typeof date === "string") {
+      // Try parsing as ISO date first, then as yyyy-MM-dd
+      const isoDate = new Date(date);
+      if (!isNaN(isoDate.getTime())) {
+        d = isoDate;
+      } else {
+        d = parse(date, "yyyy-MM-dd", new Date());
+      }
     } else {
-      d = parse(date, "yyyy-MM-dd", new Date());
+      d = date;
     }
-  } else {
-    d = date;
+    
+    // Handle invalid dates
+    if (isNaN(d.getTime())) return "Invalid Date";
+    
+    // For consistent server/client rendering, use UTC for formatting
+    const formatted = format(d, pattern);
+    return formatted;
+  } catch (error) {
+    console.error("Date formatting error:", error, date);
+    return "Invalid Date";
   }
-  
-  // Handle invalid dates
-  if (isNaN(d.getTime())) return "Invalid Date";
-  
-  return format(toManilaTime(d), pattern);
 }
 
 export function formatTime(time: string | null | undefined): string {
   if (!time) return "N/A";
   
   try {
-    const parsed = parse(time.slice(0, 5), "HH:mm", new Date());
-    if (isNaN(parsed.getTime())) return "Invalid Time";
-    return format(parsed, "hh:mm a");
-  } catch {
+    const timeStr = time.slice(0, 5);
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    
+    if (isNaN(hours) || isNaN(minutes)) return "Invalid Time";
+    
+    const period = hours >= 12 ? "PM" : "AM";
+    const displayHours = hours % 12 || 12;
+    const displayMinutes = String(minutes).padStart(2, "0");
+    
+    return `${displayHours}:${displayMinutes} ${period}`;
+  } catch (error) {
+    console.error("Time formatting error:", error, time);
     return "Invalid Time";
   }
 }
 
 export function formatTimeRange(start: string | null | undefined, end: string | null | undefined): string {
-  return `${formatTime(start)} - ${formatTime(end)}`;
+  const startTime = formatTime(start);
+  const endTime = formatTime(end);
+  return `${startTime} - ${endTime}`;
 }
 
 export function timeToMinutes(time: string): number {

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ClientOnly } from "@/components/ui/client-only";
 import { formatCurrency } from "@/lib/utils";
 import { formatDate } from "@/lib/booking/time";
 import type { PriceHistory } from "@/types";
@@ -82,7 +83,7 @@ export default function SettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Booking Price</CardTitle>
+          <CardTitle>Rimreserve Price</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="rounded-lg bg-muted/50 p-4">
@@ -107,7 +108,7 @@ export default function SettingsPage() {
           </Button>
 
           <p className="text-xs text-muted-foreground">
-            Changing the price only affects new bookings. Existing bookings retain their original price.
+            Changing the price only affects new Rimreserve bookings. Existing bookings retain their original price.
           </p>
         </CardContent>
       </Card>
@@ -117,22 +118,24 @@ export default function SettingsPage() {
           <CardTitle>Price History</CardTitle>
         </CardHeader>
         <CardContent>
-          {history.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No price history available.</p>
-          ) : (
-            <div className="space-y-3">
-              {history.map((entry) => (
-                <div key={entry.id} className="flex justify-between items-center border-b pb-2 last:border-0">
-                  <div>
-                    <p className="font-semibold">{formatCurrency(entry.price_per_hour)}/hour</p>
-                    <p className="text-xs text-muted-foreground">
-                      Effective: {entry.effective_from ? formatDate(entry.effective_from) : "N/A"}
-                    </p>
+          <ClientOnly fallback={<Skeleton className="h-32 w-full" />}>
+            {history.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No price history available.</p>
+            ) : (
+              <div className="space-y-3">
+                {history.map((entry) => (
+                  <div key={entry.id} className="flex justify-between items-center border-b pb-2 last:border-0">
+                    <div>
+                      <p className="font-semibold">{formatCurrency(entry.price_per_hour)}/hour</p>
+                      <p className="text-xs text-muted-foreground">
+                        Effective: {entry.effective_from ? formatDate(entry.effective_from) : "N/A"}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </ClientOnly>
         </CardContent>
       </Card>
     </div>

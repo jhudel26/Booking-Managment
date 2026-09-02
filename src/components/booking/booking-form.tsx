@@ -57,16 +57,16 @@ export function BookingForm({ date, pricePerHour, onSubmit, loading }: BookingFo
   const handleFormSubmit = async (data: BookingCreateInput) => {
     try {
       await onSubmit(data);
-      toast.success("Booking request submitted successfully");
+      toast.success("Reservation request submitted successfully");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to create booking");
+      toast.error(err instanceof Error ? err.message : "Failed to create reservation");
     }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>New Booking Request</CardTitle>
+        <CardTitle>New Reservation Request</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">

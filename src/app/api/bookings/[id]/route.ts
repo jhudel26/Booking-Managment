@@ -55,7 +55,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  await logAudit("booking_edited", "booking", id, user.id, body);
+  await logAudit("reservation_edited", "reservation", id, user.id, body);
 
   return NextResponse.json(data);
 }
@@ -110,14 +110,14 @@ async function handleBookingAction(
   if (error) {
     if (error.message.includes("conflict")) {
       return NextResponse.json(
-        { error: "Cannot approve: time slot conflicts with another booking" },
+        { error: "Cannot approve: time slot conflicts with another reservation" },
         { status: 409 }
       );
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  await logAudit(`booking_${action}`, "booking", id, user.id, { reason });
+  await logAudit(`reservation_${action}`, "reservation", id, user.id, { reason });
 
   return NextResponse.json(data);
 }

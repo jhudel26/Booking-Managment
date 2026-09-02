@@ -15,5 +15,5 @@ export function formatCurrency(amount: number): string {
 }
 
 export function formatBookingNumber(id: string, bookingNumber?: string): string {
-  return bookingNumber || `BK-${id.slice(0, 8).toUpperCase()}`;
+  return bookingNumber || `RR-${id.slice(0, 8).toUpperCase()}`;
 }

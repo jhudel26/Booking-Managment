@@ -64,7 +64,7 @@ export async function POST(request: Request) {
   const { data: priceSetting } = await serviceClient
     .from("system_settings")
     .select("setting_value")
-    .eq("setting_key", "booking_price_per_hour")
+    .eq("setting_key", "rimreserve_price_per_hour")
     .single();
 
   const pricePerHour = parseFloat(priceSetting?.setting_value || "200");
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     parsed.data.end_time
   )) {
     return NextResponse.json(
-      { error: "This time slot conflicts with an existing booking" },
+      { error: "This time slot conflicts with an existing reservation" },
       { status: 409 }
     );
   }
@@ -119,14 +119,14 @@ export async function POST(request: Request) {
   if (error) {
     if (error.message.includes("conflict")) {
       return NextResponse.json(
-        { error: "This time slot conflicts with an existing booking" },
+        { error: "This time slot conflicts with an existing reservation" },
         { status: 409 }
       );
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  await logAudit("booking_created", "booking", booking.id, user.id, {
+  await logAudit("reservation_created", "reservation", booking.id, user.id, {
     booking_number: bookingNumber,
     date: parsed.data.booking_date,
   });

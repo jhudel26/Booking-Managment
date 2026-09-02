@@ -44,23 +44,23 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold">Rimreserve Admin</h1>
         <Button asChild>
           <Link href="/admin/calendar">
             <Calendar className="h-4 w-4 mr-2" />
-            New Booking
+            New Reservation
           </Link>
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatCard title="My Bookings" value={bookings.length} />
+        <StatCard title="My Reservations" value={bookings.length} />
         <StatCard title="Pending" value={pending} />
         <StatCard title="Approved" value={approved} />
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold mb-4">Recent Bookings</h2>
+        <h2 className="text-lg font-semibold mb-4">Recent Reservations</h2>
         <BookingTable
           bookings={bookings.slice(0, 10)}
           onView={setSelectedBooking}

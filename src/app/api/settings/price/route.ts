@@ -10,7 +10,7 @@ export async function GET() {
   const { data: setting } = await supabase
     .from("system_settings")
     .select("setting_value")
-    .eq("setting_key", "booking_price_per_hour")
+    .eq("setting_key", "rimreserve_price_per_hour")
     .single();
 
   const { data: history } = await supabase
@@ -55,7 +55,7 @@ export async function PUT(request: Request) {
   await serviceClient
     .from("system_settings")
     .upsert({
-      setting_key: "booking_price_per_hour",
+      setting_key: "rimreserve_price_per_hour",
       setting_value: String(parsed.data.price_per_hour),
       updated_by: user.id,
       updated_at: new Date().toISOString(),

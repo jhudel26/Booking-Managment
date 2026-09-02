@@ -52,7 +52,7 @@ export function BookingTable({ bookings, onView, actions }: BookingTableProps) {
   if (bookings.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground">
-        No bookings found.
+        No reservations found.
       </div>
     );
   }
@@ -63,7 +63,7 @@ export function BookingTable({ bookings, onView, actions }: BookingTableProps) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b text-left text-muted-foreground">
-              <th className="pb-3 pr-4 font-medium">Booking</th>
+              <th className="pb-3 pr-4 font-medium">Reservation</th>
               <th className="pb-3 pr-4 font-medium">Date</th>
               <th className="pb-3 pr-4 font-medium">Time</th>
               <th className="pb-3 pr-4 font-medium">Duration</th>

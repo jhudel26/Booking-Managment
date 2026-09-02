@@ -125,12 +125,12 @@ export function DashboardNav({
 export const adminNavItems: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
   { href: "/admin/calendar", label: "Calendar", icon: <Calendar className="h-4 w-4" /> },
-  { href: "/admin/bookings", label: "My Bookings", icon: <ClipboardList className="h-4 w-4" /> },
+  { href: "/admin/bookings", label: "My Reservations", icon: <ClipboardList className="h-4 w-4" /> },
 ];
 
 export const superAdminNavItems: NavItem[] = [
   { href: "/super-admin", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
-  { href: "/super-admin/bookings", label: "Bookings", icon: <ClipboardList className="h-4 w-4" /> },
+  { href: "/super-admin/bookings", label: "Reservations", icon: <ClipboardList className="h-4 w-4" /> },
   { href: "/super-admin/users", label: "Users", icon: <Users className="h-4 w-4" /> },
   { href: "/super-admin/settings", label: "Settings", icon: <Settings className="h-4 w-4" /> },
 ];

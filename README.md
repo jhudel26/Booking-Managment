@@ -1,4 +1,4 @@
-# Booking Management System
+# Rimreserve
 
 A production-ready booking management web application built with **Next.js**, **TypeScript**, **Tailwind CSS**, and **Supabase**. Designed for deployment via **GitHub → Vercel → Supabase**.
 
@@ -31,7 +31,7 @@ A production-ready booking management web application built with **Next.js**, **
 
 ```bash
 git clone <your-repo-url>
-cd booking-management
+cd rimreserve
 ```
 
 ### 2. Install dependencies
@@ -54,15 +54,27 @@ npm install
 
 ### 5. Create the first Super Admin
 
-1. Go to Supabase Dashboard → Authentication → Users
-2. Click **Add user** and create an account with email/password
-3. Run in SQL Editor (replace the email):
+> **If you see "Database error creating new user"** when adding a user in Supabase Auth,
+> run `supabase/migrations/002_fix_profile_trigger.sql` in the SQL Editor first, then try again.
+
+1. Open **Supabase SQL Editor** and run `supabase/migrations/002_fix_profile_trigger.sql`
+2. Go to **Authentication → Users → Add user**
+3. Enter email and password (leave **User Metadata** empty)
+4. Run in SQL Editor (replace the email):
 
 ```sql
-UPDATE profiles
+UPDATE public.profiles
 SET role = 'super_admin', full_name = 'Super Administrator', is_active = true
 WHERE email = 'your-email@example.com';
 ```
+
+5. Verify:
+
+```sql
+SELECT id, email, role, is_active FROM public.profiles WHERE email = 'your-email@example.com';
+```
+
+If the user exists in Auth but has no profile row, see `supabase/setup_super_admin.sql` Option B.
 
 See `supabase/setup_super_admin.sql` for details.
 
@@ -177,3 +189,7 @@ See `supabase/seed.sql` for optional sample data. **Never use default passwords 
 ## License
 
 MIT
+
+---
+
+**Rimreserve** - Professional Booking Management System

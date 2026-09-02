@@ -45,7 +45,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <h1 className="text-lg font-bold">Booking Calendar</h1>
+          <h1 className="text-lg font-bold">Rimreserve</h1>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button variant="outline" size="sm" asChild>
@@ -60,7 +60,7 @@ export default function HomePage() {
 
       <main className="container mx-auto px-4 py-8 space-y-8">
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Book Your Time Slot</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Rimreserve Booking</h2>
           <p className="text-muted-foreground max-w-lg mx-auto">
             View availability and see scheduled bookings. Select a date to view the daily schedule.
           </p>
@@ -96,7 +96,7 @@ export default function HomePage() {
       </main>
 
       <footer className="border-t py-6 text-center text-sm text-muted-foreground">
-        <p>Booking Management System &copy; {new Date().getFullYear()}</p>
+        <p>Rimreserve &copy; {new Date().getFullYear()}</p>
       </footer>
     </div>
   );
