@@ -1,64 +1,10 @@
 import { NextResponse } from "next/server";
-import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { bookingCreateSchema } from "@/lib/validation/schemas";
 import { calculateTotalPrice, getBookingDuration, hasConflict, generateBookingNumber } from "@/lib/booking/pricing";
-import { canCreateBooking } from "@/lib/auth/permissions";
-import { logAudit } from "@/lib/audit";
 import type { Booking } from "@/types";
 
-export async function GET(request: Request) {
-  const supabase = await createClient();
-  const { searchParams } = new URL(request.url);
-  const date = searchParams.get("date");
-  const status = searchParams.get("status");
-  const mine = searchParams.get("mine") === "true";
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  let query = supabase
-    .from("bookings")
-    .select("*, creator:profiles!bookings_created_by_fkey(*), approver:profiles!bookings_approved_by_fkey(*)")
-    .order("booking_date", { ascending: true })
-    .order("start_time", { ascending: true });
-
-  if (date) query = query.eq("booking_date", date);
-  
-  // Only show approved bookings to non-authenticated users
-  if (!user) {
-    query = query.eq("status", "approved");
-  } else if (status) {
-    query = query.eq("status", status);
-  }
-  
-  if (mine && user) query = query.eq("created_by", user.id);
-
-  const { data, error } = await query;
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data);
-}
-
 export async function POST(request: Request) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (!canCreateBooking(profile)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
   const body = await request.json();
   const parsed = bookingCreateSchema.safeParse(body);
 
@@ -118,7 +64,7 @@ export async function POST(request: Request) {
       purpose: parsed.data.purpose || "",
       notes: parsed.data.notes || "",
       status: "pending",
-      created_by: user.id,
+      created_by: null, // Public booking, no user
     })
     .select()
     .single();
@@ -132,11 +78,6 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-
-  await logAudit("reservation_created", "reservation", booking.id, user.id, {
-    booking_number: bookingNumber,
-    date: parsed.data.booking_date,
-  });
 
   return NextResponse.json(booking, { status: 201 });
 }

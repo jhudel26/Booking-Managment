@@ -7,6 +7,7 @@ import { Calendar, LayoutDashboard, Users, Settings, ClipboardList, Menu, X, Log
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { NotificationBadge } from "@/components/notifications/notification-badge";
 import type { Profile } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -92,6 +93,7 @@ export function DashboardNav({
             {title}
           </Link>
           <div className="ml-auto flex items-center gap-2">
+            <NotificationBadge />
             <span className="hidden sm:inline text-sm text-muted-foreground">
               {profile.full_name || profile.email}
             </span>

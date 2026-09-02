@@ -21,9 +21,10 @@ interface BookingFormProps {
   pricePerHour: number;
   onSubmit: (data: BookingCreateInput) => Promise<void>;
   loading?: boolean;
+  isPublic?: boolean;
 }
 
-export function BookingForm({ date, pricePerHour, onSubmit, loading }: BookingFormProps) {
+export function BookingForm({ date, pricePerHour, onSubmit, loading, isPublic = false }: BookingFormProps) {
   const timeOptions = generateTimeOptions12Hour();
 
   const {
@@ -119,14 +120,18 @@ export function BookingForm({ date, pricePerHour, onSubmit, loading }: BookingFo
               <p className="text-xs text-muted-foreground">Duration</p>
               <p className="font-semibold">{duration > 0 ? `${duration} hrs` : "—"}</p>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Price</p>
-              <p className="font-semibold">{formatCurrency(pricePerHour)}/hr</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Estimated Total</p>
-              <p className="font-semibold text-primary">{duration > 0 ? formatCurrency(total) : "—"}</p>
-            </div>
+            {!isPublic && (
+              <>
+                <div>
+                  <p className="text-xs text-muted-foreground">Price</p>
+                  <p className="font-semibold">{formatCurrency(pricePerHour)}/hr</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Estimated Total</p>
+                  <p className="font-semibold text-primary">{duration > 0 ? formatCurrency(total) : "—"}</p>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="space-y-2">
