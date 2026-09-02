@@ -82,78 +82,42 @@ async function handleBookingAction(
     return NextResponse.json({ error: "Forbidden - You don't have permission to approve bookings" }, { status: 403 });
   }
 
-  try {
-    const serviceClient = await createServiceClient();
-    const now = new Date().toISOString();
+  const now = new Date().toISOString();
 
-    const updateData: Record<string, unknown> = {
-      status: action,
-      notes: reason || undefined,
-    };
+  const updateData: Record<string, unknown> = {
+    status: action,
+    notes: reason || undefined,
+  };
 
-    if (action === "approved") {
-      updateData.approved_by = user.id;
-      updateData.approved_at = now;
-    } else if (action === "rejected") {
-      updateData.rejected_at = now;
-      updateData.approved_by = user.id;
-    } else if (action === "cancelled") {
-      updateData.cancelled_at = now;
-    }
-
-    const { data, error } = await serviceClient
-      .from("bookings")
-      .update(updateData)
-      .eq("id", id)
-      .select()
-      .single();
-
-    if (error) {
-      if (error.message.includes("conflict")) {
-        return NextResponse.json(
-          { error: "Cannot approve: time slot conflicts with another reservation" },
-          { status: 409 }
-        );
-      }
-      return NextResponse.json({ error: error.message, details: error }, { status: 500 });
-    }
-
-    await logAudit(`reservation_${action}`, "reservation", id, user.id, { reason });
-    return NextResponse.json(data);
-  } catch (serviceError) {
-    // If serviceClient fails, try with regular client as fallback
-    console.error("Service client error, trying fallback:", serviceError);
-    
-    const now = new Date().toISOString();
-    const updateData: Record<string, unknown> = {
-      status: action,
-      notes: reason || undefined,
-    };
-
-    if (action === "approved") {
-      updateData.approved_by = user.id;
-      updateData.approved_at = now;
-    } else if (action === "rejected") {
-      updateData.rejected_at = now;
-      updateData.approved_by = user.id;
-    } else if (action === "cancelled") {
-      updateData.cancelled_at = now;
-    }
-
-    const { data, error } = await supabase
-      .from("bookings")
-      .update(updateData)
-      .eq("id", id)
-      .select()
-      .single();
-
-    if (error) {
-      return NextResponse.json({ error: error.message, details: error }, { status: 500 });
-    }
-
-    await logAudit(`reservation_${action}`, "reservation", id, user.id, { reason });
-    return NextResponse.json(data);
+  if (action === "approved") {
+    updateData.approved_by = user.id;
+    updateData.approved_at = now;
+  } else if (action === "rejected") {
+    updateData.rejected_at = now;
+    updateData.approved_by = user.id;
+  } else if (action === "cancelled") {
+    updateData.cancelled_at = now;
   }
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .update(updateData)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    if (error.message.includes("conflict")) {
+      return NextResponse.json(
+        { error: "Cannot approve: time slot conflicts with another reservation" },
+        { status: 409 }
+      );
+    }
+    return NextResponse.json({ error: error.message, details: error }, { status: 500 });
+  }
+
+  await logAudit(`reservation_${action}`, "reservation", id, user.id, { reason });
+  return NextResponse.json(data);
 }
 
 export async function POST(request: Request, { params }: RouteParams) {
