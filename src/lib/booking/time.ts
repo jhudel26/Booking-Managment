@@ -10,17 +10,41 @@ export function fromManilaTime(date: Date): Date {
   return fromZonedTime(date, APP_TIMEZONE);
 }
 
-export function formatDate(date: string | Date, pattern = "MMMM d, yyyy"): string {
-  const d = typeof date === "string" ? parse(date, "yyyy-MM-dd", new Date()) : date;
+export function formatDate(date: string | Date | null | undefined, pattern = "MMMM d, yyyy"): string {
+  if (!date) return "N/A";
+  
+  let d: Date;
+  if (typeof date === "string") {
+    // Try parsing as ISO date first, then as yyyy-MM-dd
+    const isoDate = new Date(date);
+    if (!isNaN(isoDate.getTime())) {
+      d = isoDate;
+    } else {
+      d = parse(date, "yyyy-MM-dd", new Date());
+    }
+  } else {
+    d = date;
+  }
+  
+  // Handle invalid dates
+  if (isNaN(d.getTime())) return "Invalid Date";
+  
   return format(toManilaTime(d), pattern);
 }
 
-export function formatTime(time: string): string {
-  const parsed = parse(time.slice(0, 5), "HH:mm", new Date());
-  return format(parsed, "hh:mm a");
+export function formatTime(time: string | null | undefined): string {
+  if (!time) return "N/A";
+  
+  try {
+    const parsed = parse(time.slice(0, 5), "HH:mm", new Date());
+    if (isNaN(parsed.getTime())) return "Invalid Time";
+    return format(parsed, "hh:mm a");
+  } catch {
+    return "Invalid Time";
+  }
 }
 
-export function formatTimeRange(start: string, end: string): string {
+export function formatTimeRange(start: string | null | undefined, end: string | null | undefined): string {
   return `${formatTime(start)} - ${formatTime(end)}`;
 }
 

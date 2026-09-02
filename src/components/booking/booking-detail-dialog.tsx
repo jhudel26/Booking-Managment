@@ -69,7 +69,7 @@ export function BookingDetailDialog({
 
           <Separator />
 
-          <DetailRow label="Date" value={formatDate(booking.booking_date)} />
+          <DetailRow label="Date" value={booking.booking_date ? formatDate(booking.booking_date) : "N/A"} />
           <DetailRow label="Time" value={formatTimeRange(booking.start_time, booking.end_time)} />
           <DetailRow label="Duration" value={`${booking.duration_hours} hours`} />
           <DetailRow label="Price" value={`${formatCurrency(booking.price_per_hour)}/hour`} />
@@ -80,7 +80,7 @@ export function BookingDetailDialog({
           )}
           {booking.purpose && <DetailRow label="Purpose" value={booking.purpose} />}
           {booking.notes && <DetailRow label="Notes" value={booking.notes} />}
-          <DetailRow label="Created" value={formatDate(booking.created_at)} />
+          <DetailRow label="Created" value={booking.created_at ? formatDate(booking.created_at) : "N/A"} />
 
           {isSuperAdmin && booking.status === "pending" && (
             <>

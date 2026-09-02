@@ -26,7 +26,13 @@ export default function SettingsPage() {
         setPricePerHour(data.price_per_hour);
         setNewPrice(String(data.price_per_hour));
         setHistory(data.history || []);
+      } else {
+        console.error("Failed to load settings:", res.status);
+        toast.error("Failed to load settings");
       }
+    } catch (error) {
+      console.error("Error loading settings:", error);
+      toast.error("Failed to load settings");
     } finally {
       setLoading(false);
     }
@@ -120,7 +126,7 @@ export default function SettingsPage() {
                   <div>
                     <p className="font-semibold">{formatCurrency(entry.price_per_hour)}/hour</p>
                     <p className="text-xs text-muted-foreground">
-                      Effective: {formatDate(entry.effective_from)}
+                      Effective: {entry.effective_from ? formatDate(entry.effective_from) : "N/A"}
                     </p>
                   </div>
                 </div>

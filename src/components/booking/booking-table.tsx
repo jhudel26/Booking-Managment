@@ -25,7 +25,7 @@ export function BookingCard({ booking, onView, actions }: BookingCardProps) {
           <StatusBadge status={booking.status} />
         </div>
         <div className="space-y-1 text-sm text-muted-foreground">
-          <p>{formatDate(booking.booking_date)}</p>
+          <p>{booking.booking_date ? formatDate(booking.booking_date) : "N/A"}</p>
           <p>{formatTimeRange(booking.start_time, booking.end_time)}</p>
           <p className="font-medium text-foreground">{formatCurrency(booking.total_price)}</p>
         </div>
@@ -77,7 +77,7 @@ export function BookingTable({ bookings, onView, actions }: BookingTableProps) {
             {bookings.map((booking) => (
               <tr key={booking.id} className="border-b last:border-0">
                 <td className="py-3 pr-4 font-mono text-xs">{booking.booking_number}</td>
-                <td className="py-3 pr-4">{formatDate(booking.booking_date)}</td>
+                <td className="py-3 pr-4">{booking.booking_date ? formatDate(booking.booking_date) : "N/A"}</td>
                 <td className="py-3 pr-4">{formatTimeRange(booking.start_time, booking.end_time)}</td>
                 <td className="py-3 pr-4">{booking.duration_hours}h</td>
                 <td className="py-3 pr-4">{booking.requester_name}</td>

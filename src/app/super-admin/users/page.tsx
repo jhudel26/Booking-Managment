@@ -35,7 +35,15 @@ export default function UsersPage() {
   const loadUsers = async () => {
     try {
       const res = await fetch("/api/users");
-      if (res.ok) setUsers(await res.json());
+      if (res.ok) {
+        setUsers(await res.json());
+      } else {
+        console.error("Failed to load users:", res.status);
+        toast.error("Failed to load users");
+      }
+    } catch (error) {
+      console.error("Error loading users:", error);
+      toast.error("Failed to load users");
     } finally {
       setLoading(false);
     }
@@ -152,7 +160,7 @@ export default function UsersPage() {
                   </div>
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                   <p className="text-xs text-muted-foreground">
-                    Created {formatDate(user.created_at)}
+                    Created {user.created_at ? formatDate(user.created_at) : "N/A"}
                   </p>
                 </div>
                 <div className="flex gap-2">
