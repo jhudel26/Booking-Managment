@@ -6,7 +6,17 @@ import { DashboardNav, superAdminNavItems } from "@/components/layout/dashboard-
 export default async function SuperAdminLayout({ children }: LayoutProps<"/super-admin">) {
   const profile = await getProfile();
 
-  if (!profile || !canAccessSuperAdmin(profile)) {
+  if (!profile) {
+    redirect("/login");
+  }
+
+  // Allow access if user is super admin OR has elevated permissions
+  const hasAccess = profile.role === "super_admin" || 
+    profile.can_approve_bookings || 
+    profile.can_create_admin || 
+    profile.can_manage_rates;
+
+  if (!hasAccess) {
     redirect("/login");
   }
 

@@ -56,7 +56,7 @@ export default function LoginPage() {
       }
 
       toast.success("Logged in successfully");
-      router.push(getDashboardPath(profile.role as UserRole));
+      router.push(getDashboardPath(profile.role as UserRole, profile));
       router.refresh();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Login failed");

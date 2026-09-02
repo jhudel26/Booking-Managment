@@ -26,13 +26,21 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   }
 
   const body = await request.json();
-  const parsed = updateUserSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  
+  // Allow direct permission updates without full schema validation
+  const allowedUpdates = [
+    'is_active', 'full_name', 'role', 'is_active',
+    'can_create_admin', 'can_approve_bookings', 'can_manage_rates'
+  ];
+  
+  const updateData: Record<string, unknown> = {};
+  for (const key of allowedUpdates) {
+    if (key in body) {
+      updateData[key] = body[key];
+    }
   }
 
-  if (parsed.data.role === "super_admin") {
+  if (updateData.role === "super_admin") {
     return NextResponse.json(
       { error: "Cannot assign Super Admin role via API" },
       { status: 403 }
@@ -43,7 +51,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
   const { data, error } = await serviceClient
     .from("profiles")
-    .update(parsed.data)
+    .update(updateData)
     .eq("id", id)
     .select()
     .single();
@@ -52,9 +60,14 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  if (parsed.data.is_active !== undefined) {
+  // Log permission changes
+  if ('can_create_admin' in updateData || 'can_approve_bookings' in updateData || 'can_manage_rates' in updateData) {
+    await logAudit("admin_permissions_updated", "profile", id, user.id, updateData);
+  }
+
+  if (updateData.is_active !== undefined) {
     await logAudit(
-      parsed.data.is_active ? "admin_enabled" : "admin_disabled",
+      updateData.is_active ? "admin_enabled" : "admin_disabled",
       "profile",
       id,
       user.id

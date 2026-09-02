@@ -37,7 +37,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     .eq("id", user.id)
     .single();
 
-  if (!canAccessSuperAdmin(profile)) {
+  if (!canApproveBooking(profile)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -78,7 +78,7 @@ async function handleBookingAction(
     .eq("id", user.id)
     .single();
 
-  if (!canAccessSuperAdmin(profile)) {
+  if (!canApproveBooking(profile)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

@@ -28,6 +28,9 @@ export function BookingCard({ booking, onView, actions }: BookingCardProps) {
           <p>{booking.booking_date ? formatDate(booking.booking_date) : "N/A"}</p>
           <p>{formatTimeRange(booking.start_time, booking.end_time)}</p>
           <p className="font-medium text-foreground">{formatCurrency(booking.total_price)}</p>
+          {booking.creator && (
+            <p className="text-xs">Created by: {booking.creator.full_name || booking.creator.email}</p>
+          )}
         </div>
         <div className="flex gap-2 mt-3">
           {onView && (

@@ -10,7 +10,11 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
     redirect("/login");
   }
 
-  if (profile.role === "super_admin") {
+  // Redirect to super-admin if they have elevated permissions
+  if (profile.role === "super_admin" || 
+      profile.can_approve_bookings || 
+      profile.can_create_admin || 
+      profile.can_manage_rates) {
     redirect("/super-admin");
   }
 

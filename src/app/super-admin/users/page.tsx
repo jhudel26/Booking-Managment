@@ -11,11 +11,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ClientOnly } from "@/components/ui/client-only";
+import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ROLE_LABELS, type Profile } from "@/types";
 import { formatDate } from "@/lib/booking/time";
 import { toast } from "sonner";
-import { Plus, UserX, UserCheck, KeyRound } from "lucide-react";
+import { Plus, UserX, UserCheck, KeyRound, Shield } from "lucide-react";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<Profile[]>([]);
@@ -89,6 +90,20 @@ export default function UsersPage() {
     await loadUsers();
   };
 
+  const togglePermission = async (user: Profile, permission: string, value: boolean) => {
+    const res = await fetch(`/api/users/${user.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [permission]: value }),
+    });
+    if (!res.ok) {
+      toast.error("Failed to update permission");
+      return;
+    }
+    toast.success("Permission updated");
+    await loadUsers();
+  };
+
   const resetPassword = async (userId: string) => {
     const res = await fetch(`/api/users/${userId}`, { method: "POST" });
     if (!res.ok) {
@@ -153,42 +168,85 @@ export default function UsersPage() {
           ) : (
             users.map((user) => (
               <Card key={user.id}>
-                <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold">{user.full_name || user.email}</p>
-                      <Badge variant="secondary">{ROLE_LABELS[user.role]}</Badge>
-                      {!user.is_active && <Badge variant="destructive">Disabled</Badge>}
+                <CardContent className="p-4 flex flex-col gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold">{user.full_name || user.email}</p>
+                        <Badge variant="secondary">{ROLE_LABELS[user.role]}</Badge>
+                        {!user.is_active && <Badge variant="destructive">Disabled</Badge>}
+                      </div>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Created {user.created_at ? formatDate(user.created_at) : "N/A"}
+                      </p>
                     </div>
-                    <p className="text-sm text-muted-foreground">{user.email}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Created {user.created_at ? formatDate(user.created_at) : "N/A"}
-                    </p>
+                    <div className="flex gap-2">
+                      {user.role !== "super_admin" && (
+                        <>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => toggleActive(user)}
+                          >
+                            {user.is_active ? (
+                              <><UserX className="h-4 w-4 mr-1" /> Disable</>
+                            ) : (
+                              <><UserCheck className="h-4 w-4 mr-1" /> Enable</>
+                            )}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => resetPassword(user.id)}
+                          >
+                            <KeyRound className="h-4 w-4 mr-1" /> Reset Password
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    {user.role !== "super_admin" && (
-                      <>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => toggleActive(user)}
-                        >
-                          {user.is_active ? (
-                            <><UserX className="h-4 w-4 mr-1" /> Disable</>
-                          ) : (
-                            <><UserCheck className="h-4 w-4 mr-1" /> Enable</>
-                          )}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => resetPassword(user.id)}
-                        >
-                          <KeyRound className="h-4 w-4 mr-1" /> Reset Password
-                        </Button>
-                      </>
-                    )}
-                  </div>
+                  
+                  {user.role === "admin" && (
+                    <div className="border-t pt-4 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Admin Permissions</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor={`create-admin-${user.id}`} className="text-sm">
+                            Create Admin
+                          </Label>
+                          <Switch
+                            id={`create-admin-${user.id}`}
+                            checked={user.can_create_admin || false}
+                            onCheckedChange={(checked) => togglePermission(user, 'can_create_admin', checked)}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor={`approve-bookings-${user.id}`} className="text-sm">
+                            Approve Bookings
+                          </Label>
+                          <Switch
+                            id={`approve-bookings-${user.id}`}
+                            checked={user.can_approve_bookings || false}
+                            onCheckedChange={(checked) => togglePermission(user, 'can_approve_bookings', checked)}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor={`manage-rates-${user.id}`} className="text-sm">
+                            Manage Rates
+                          </Label>
+                          <Switch
+                            id={`manage-rates-${user.id}`}
+                            checked={user.can_manage_rates || false}
+                            onCheckedChange={(checked) => togglePermission(user, 'can_manage_rates', checked)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))

@@ -50,6 +50,9 @@ export const updateUserSchema = z.object({
   full_name: z.string().min(1).max(200).optional(),
   role: z.enum(["user", "admin", "super_admin"]).optional(),
   is_active: z.boolean().optional(),
+  can_create_admin: z.boolean().optional(),
+  can_approve_bookings: z.boolean().optional(),
+  can_manage_rates: z.boolean().optional(),
 });
 
 export const priceUpdateSchema = z.object({

@@ -81,6 +81,24 @@ export function BookingDetailDialog({
           {booking.purpose && <DetailRow label="Purpose" value={booking.purpose} />}
           {booking.notes && <DetailRow label="Notes" value={booking.notes} />}
           <DetailRow label="Created" value={booking.created_at ? formatDate(booking.created_at) : "N/A"} />
+          
+          {(booking.creator || booking.approver) && (
+            <>
+              <Separator />
+              {booking.creator && (
+                <>
+                  <DetailRow label="Created By" value={booking.creator.full_name || booking.creator.email} />
+                  <DetailRow label="Creator Role" value={booking.creator.role} />
+                </>
+              )}
+              {booking.approver && (
+                <>
+                  <DetailRow label="Approved By" value={booking.approver.full_name || booking.approver.email} />
+                  <DetailRow label="Approved At" value={booking.approved_at ? formatDate(booking.approved_at) : "N/A"} />
+                </>
+              )}
+            </>
+          )}
 
           {isSuperAdmin && booking.status === "pending" && (
             <>
