@@ -57,7 +57,6 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     .single();
 
   if (error) {
-    console.error("Database error updating profile:", error);
     return NextResponse.json({ error: error.message, details: error }, { status: 500 });
   }
 

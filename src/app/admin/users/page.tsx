@@ -68,7 +68,7 @@ export default function AdminUsersPage() {
       const data = await res.json();
       setUsers(data);
     } catch (error) {
-      console.error("Failed to load users:", error);
+      toast.error("Failed to load users");
     } finally {
       setLoading(false);
     }

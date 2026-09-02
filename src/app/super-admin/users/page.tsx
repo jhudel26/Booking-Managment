@@ -96,7 +96,6 @@ export default function UsersPage() {
     setUsers(users.map(u => u.id === user.id ? { ...u, [permission]: value } : u));
 
     try {
-      console.log("Updating permission:", { userId: user.id, permission, value });
       const res = await fetch(`/api/users/${user.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -104,12 +103,10 @@ export default function UsersPage() {
       });
       if (!res.ok) {
         const err = await res.json();
-        console.error("Permission update error:", JSON.stringify(err, null, 2));
         throw new Error(err.error || err.details?.message || "Failed to update permission");
       }
       toast.success("Permission updated");
     } catch (error) {
-      console.error("Toggle permission error:", error);
       toast.error(error instanceof Error ? error.message : "Failed to update permission");
       // Revert on error
       setUsers(previousUsers);
