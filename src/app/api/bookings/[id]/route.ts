@@ -120,9 +120,9 @@ async function handleBookingAction(
 
     await logAudit(`reservation_${action}`, "reservation", id, user.id, { reason });
     return NextResponse.json(data);
-  } catch (error) {
+  } catch (serviceError) {
     // If serviceClient fails, try with regular client as fallback
-    console.error("Service client error, trying fallback:", error);
+    console.error("Service client error, trying fallback:", serviceError);
     
     const now = new Date().toISOString();
     const updateData: Record<string, unknown> = {
