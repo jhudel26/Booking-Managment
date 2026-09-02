@@ -132,6 +132,7 @@ export function getCalendarGrid(year: number, month: number): (Date | null)[] {
   for (let d = 1; d <= lastDay.getDate(); d++) {
     grid.push(new Date(year, month, d));
   }
-  while (grid.length % 7 !== 0) grid.push(null);
+  // Ensure grid always has 6 rows (42 cells) for consistent height
+  while (grid.length < 42) grid.push(null);
   return grid;
 }

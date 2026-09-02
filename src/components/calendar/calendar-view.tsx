@@ -105,7 +105,7 @@ export function CalendarView({
                 key={dateStr}
                 onClick={() => onDateSelect(dateStr)}
                 className={cn(
-                  "relative flex flex-col items-center rounded-lg p-2 text-sm transition-colors min-h-[5rem]",
+                  "relative flex flex-col items-center justify-center rounded-lg p-2 text-sm transition-colors min-h-[5rem]",
                   isSelected && "bg-primary text-primary-foreground",
                   !isSelected && "hover:bg-accent",
                   isToday && !isSelected && "ring-2 ring-primary/50"
