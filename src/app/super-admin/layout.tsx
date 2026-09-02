@@ -22,7 +22,7 @@ export default async function SuperAdminLayout({ children }: { children: React.R
 
   return (
     <div className="min-h-screen">
-      <DashboardNav profile={profile} items={superAdminNavItems} title="Rimreserve Super Admin">
+      <DashboardNav profile={profile} items={superAdminNavItems} title="Rimreserve">
         {children}
       </DashboardNav>
     </div>

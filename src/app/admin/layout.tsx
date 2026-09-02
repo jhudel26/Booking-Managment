@@ -21,7 +21,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-screen">
-      <DashboardNav profile={profile} items={navItems} title="Rimreserve Admin">
+      <DashboardNav profile={profile} items={navItems} title="Rimreserve">
         {children}
       </DashboardNav>
     </div>
