@@ -9,9 +9,9 @@ export interface Profile {
   email: string;
   role: UserRole;
   is_active: boolean;
-  can_create_admin?: boolean;
-  can_approve_bookings?: boolean;
-  can_manage_rates?: boolean;
+  can_create_admin?: boolean | null;
+  can_approve_bookings?: boolean | null;
+  can_manage_rates?: boolean | null;
   created_at: string;
   updated_at: string;
 }
