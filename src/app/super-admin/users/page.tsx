@@ -91,6 +91,10 @@ export default function UsersPage() {
   };
 
   const togglePermission = async (user: Profile, permission: string, value: boolean) => {
+    // Optimistic UI update
+    const previousUsers = [...users];
+    setUsers(users.map(u => u.id === user.id ? { ...u, [permission]: value } : u));
+
     try {
       console.log("Updating permission:", { userId: user.id, permission, value });
       const res = await fetch(`/api/users/${user.id}`, {
@@ -104,10 +108,11 @@ export default function UsersPage() {
         throw new Error(err.error || err.details?.message || "Failed to update permission");
       }
       toast.success("Permission updated");
-      await loadUsers();
     } catch (error) {
       console.error("Toggle permission error:", error);
       toast.error(error instanceof Error ? error.message : "Failed to update permission");
+      // Revert on error
+      setUsers(previousUsers);
     }
   };
 
