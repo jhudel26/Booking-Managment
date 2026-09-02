@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { CalendarView } from "@/components/calendar/calendar-view";
 import { DaySchedule } from "@/components/calendar/day-schedule";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
@@ -20,17 +18,11 @@ export default function HomePage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [pricePerHour, setPricePerHour] = useState(200);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     async function loadData() {
       setLoading(true);
       try {
-        // Check authentication status
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-        setIsAuthenticated(!!user);
-
         const [bookingsRes, priceRes] = await Promise.all([
           fetch("/api/bookings"),
           fetch("/api/settings/price"),
@@ -84,14 +76,6 @@ export default function HomePage() {
               </span>
             </div>
             <ThemeToggle />
-            {!isAuthenticated && (
-              <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                <Link href="/login">
-                  <LogIn className="h-4 w-4 mr-2" />
-                  Login
-                </Link>
-              </Button>
-            )}
           </motion.div>
         </div>
       </motion.header>
