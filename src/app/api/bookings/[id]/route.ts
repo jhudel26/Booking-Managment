@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
-import { canAccessSuperAdmin } from "@/lib/auth/permissions";
+import { canAccessSuperAdmin, canApproveBooking } from "@/lib/auth/permissions";
 import { logAudit } from "@/lib/audit";
 
 type RouteParams = { params: Promise<{ id: string }> };

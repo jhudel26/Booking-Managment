@@ -24,7 +24,7 @@ export function canManagePrice(profile: Profile | null): boolean {
   return canAccessSuperAdmin(profile) || (profile?.can_manage_rates === true);
 }
 
-export function getDashboardPath(role: UserRole, profile?: Profile | null): string {
+export function getDashboardPath(role: UserRole, profile?: Partial<Profile> | null): string {
   switch (role) {
     case "super_admin":
       return "/super-admin";

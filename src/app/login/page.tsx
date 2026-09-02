@@ -41,7 +41,7 @@ export default function LoginPage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("role, is_active")
+        .select("*")
         .eq("id", authData.user.id)
         .single();
 
