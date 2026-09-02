@@ -44,7 +44,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Rimreserve Admin</h1>
+        <h1 className="text-2xl font-bold">Rimreserve</h1>
         <Button asChild>
           <Link href="/admin/calendar">
             <Calendar className="h-4 w-4 mr-2" />
