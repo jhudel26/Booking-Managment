@@ -62,7 +62,15 @@ export default function AdminBookingsManagementPage() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `rimreserve-reservations-${new Date().toISOString().split('T')[0]}.xlsx`;
+      
+      // Format filename date as MM/dd/yyyy
+      const today = new Date();
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const day = String(today.getDate()).padStart(2, "0");
+      const year = today.getFullYear();
+      const formattedDate = `${month}/${day}/${year}`;
+      
+      a.download = `rimreserve-reservations-${formattedDate}.xlsx`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);

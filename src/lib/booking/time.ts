@@ -124,6 +124,68 @@ export function generateTimeOptions12Hour(
   return options;
 }
 
+export function formatDateForExcel(date: string | null | undefined): string {
+  if (!date) return "N/A";
+  
+  try {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "N/A";
+    
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const year = d.getFullYear();
+    
+    return `${month}/${day}/${year}`;
+  } catch (error) {
+    console.error("Date formatting error:", error, date);
+    return "N/A";
+  }
+}
+
+export function formatDateTimeForExcel(date: string | null | undefined): string {
+  if (!date) return "N/A";
+  
+  try {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "N/A";
+    
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const year = d.getFullYear();
+    
+    const hours = d.getHours();
+    const minutes = d.getMinutes();
+    const period = hours >= 12 ? "PM" : "AM";
+    const displayHours = hours % 12 || 12;
+    const displayMinutes = String(minutes).padStart(2, "0");
+    
+    return `${month}/${day}/${year} ${displayHours}:${displayMinutes} ${period}`;
+  } catch (error) {
+    console.error("DateTime formatting error:", error, date);
+    return "N/A";
+  }
+}
+
+export function formatTimeForExcel(time: string | null | undefined): string {
+  if (!time) return "N/A";
+  
+  try {
+    const timeStr = time.slice(0, 5);
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    
+    if (isNaN(hours) || isNaN(minutes)) return "N/A";
+    
+    const period = hours >= 12 ? "PM" : "AM";
+    const displayHours = hours % 12 || 12;
+    const displayMinutes = String(minutes).padStart(2, "0");
+    
+    return `${displayHours}:${displayMinutes} ${period}`;
+  } catch (error) {
+    console.error("Time formatting error:", error, time);
+    return "N/A";
+  }
+}
+
 export function datesOverlap(
   start1: string,
   end1: string,

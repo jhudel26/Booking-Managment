@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { canAccessSuperAdmin } from "@/lib/auth/permissions";
 import * as XLSX from "xlsx";
+import { formatDateTimeForExcel, formatDateForExcel, formatTimeForExcel } from "@/lib/booking/time";
 
 export async function GET(request: Request) {
   const supabase = await createClient();
@@ -56,9 +57,9 @@ export async function GET(request: Request) {
   // Transform data for Excel export
   const excelData = filteredBookings.map((booking: any) => ({
     "Reservation Number": booking.booking_number,
-    "Date": booking.booking_date,
-    "Start Time": booking.start_time,
-    "End Time": booking.end_time,
+    "Date": formatDateForExcel(booking.booking_date),
+    "Start Time": formatTimeForExcel(booking.start_time),
+    "End Time": formatTimeForExcel(booking.end_time),
     "Duration (hours)": booking.duration_hours,
     "Price per Hour": booking.price_per_hour,
     "Total Price": booking.total_price,
@@ -69,8 +70,8 @@ export async function GET(request: Request) {
     "Status": booking.status,
     "Created By": booking.creator?.full_name || booking.creator?.email,
     "Approved By": booking.approver?.full_name || booking.approver?.email,
-    "Created At": booking.created_at,
-    "Approved At": booking.approved_at,
+    "Created At": formatDateTimeForExcel(booking.created_at),
+    "Approved At": formatDateTimeForExcel(booking.approved_at),
   }));
 
   // Create workbook
@@ -82,10 +83,16 @@ export async function GET(request: Request) {
   const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
 
   // Return file
+  const today = new Date();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  const year = today.getFullYear();
+  const formattedDate = `${month}/${day}/${year}`;
+  
   return new NextResponse(new Uint8Array(buffer as Buffer), {
     headers: {
       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "Content-Disposition": `attachment; filename="rimreserve-reservations-${new Date().toISOString().split('T')[0]}.xlsx"`,
+      "Content-Disposition": `attachment; filename="rimreserve-reservations-${formattedDate}.xlsx"`,
     },
   });
 }
