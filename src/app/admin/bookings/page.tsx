@@ -5,7 +5,7 @@ import { BookingTable } from "@/components/booking/booking-table";
 import { BookingDetailDialog } from "@/components/booking/booking-detail-dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ContentLoader } from "@/components/ui/content-loader";
 import type { Booking, Profile } from "@/types";
 
 export default function AdminBookingsPage() {
@@ -80,12 +80,7 @@ export default function AdminBookingsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-64 w-full" />
-      </div>
-    );
+    return <ContentLoader label="Loading your reservations..." size="md" />;
   }
 
   return (

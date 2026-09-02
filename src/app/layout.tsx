@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { SiteStatusProvider } from "@/components/providers/site-status-provider";
+import { HydrationLoader } from "@/components/ui/hydration-loader";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -44,8 +46,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <QueryProvider>
-            {children}
-            <Toaster richColors position="top-right" />
+            <SiteStatusProvider minDisplayMs={900}>
+              <HydrationLoader>
+                {children}
+              </HydrationLoader>
+              <Toaster richColors position="top-right" />
+            </SiteStatusProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>

@@ -5,7 +5,7 @@ import { CalendarView } from "@/components/calendar/calendar-view";
 import { DaySchedule } from "@/components/calendar/day-schedule";
 import { BookingForm } from "@/components/booking/booking-form";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ContentLoader } from "@/components/ui/content-loader";
 import { getDateString } from "@/lib/booking/time";
 import type { Booking } from "@/types";
 import type { BookingCreateInput } from "@/lib/validation/schemas";
@@ -78,7 +78,7 @@ export default function AdminCalendarPage() {
           <Card>
             <CardContent className="p-6">
               {loading ? (
-                <Skeleton className="h-80 w-full" />
+                <ContentLoader label="Loading calendar..." size="md" className="h-80" />
               ) : (
                 <CalendarView
                   selectedDate={selectedDate}

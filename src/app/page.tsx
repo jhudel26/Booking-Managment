@@ -7,13 +7,11 @@ import { BookingForm } from "@/components/booking/booking-form";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { formatCurrency } from "@/lib/utils";
+import { ContentLoader } from "@/components/ui/content-loader";
 import { getDateString } from "@/lib/booking/time";
 import type { Booking } from "@/types";
-import { createClient } from "@/lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { bookingCreateSchema, type BookingCreateInput } from "@/lib/validation/schemas";
+import type { BookingCreateInput } from "@/lib/validation/schemas";
 
 export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState(getDateString(new Date()));
@@ -147,7 +145,7 @@ export default function HomePage() {
             <Card className="h-full min-h-[600px] lg:min-h-[700px] border shadow-sm">
               <CardContent className="p-6 h-full min-h-[600px] lg:min-h-[700px]">
                 {loading ? (
-                  <Skeleton className="h-[600px] lg:h-[700px] w-full" />
+                  <ContentLoader label="Loading court availability..." size="lg" className="h-[560px] lg:h-[660px]" />
                 ) : (
                   <CalendarView
                     selectedDate={selectedDate}

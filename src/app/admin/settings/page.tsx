@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ContentLoader } from "@/components/ui/content-loader";
 import { ClientOnly } from "@/components/ui/client-only";
 import { formatCurrency } from "@/lib/utils";
 import { formatDate } from "@/lib/booking/time";
@@ -69,12 +70,7 @@ export default function AdminSettingsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-48 w-full" />
-      </div>
-    );
+    return <ContentLoader label="Loading rate settings..." size="md" />;
   }
 
   return (

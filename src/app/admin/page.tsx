@@ -6,7 +6,7 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { BookingTable } from "@/components/booking/booking-table";
 import { BookingDetailDialog } from "@/components/booking/booking-detail-dialog";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ContentLoader } from "@/components/ui/content-loader";
 import type { Booking } from "@/types";
 import { Calendar, Circle } from "lucide-react";
 import { motion } from "framer-motion";
@@ -49,14 +49,7 @@ export default function AdminDashboard() {
   ].filter((item) => item.value > 0);
 
   if (loading) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-8 w-48" />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-24" />)}
-        </div>
-      </div>
-    );
+    return <ContentLoader label="Loading your dashboard..." size="md" />;
   }
 
   return (

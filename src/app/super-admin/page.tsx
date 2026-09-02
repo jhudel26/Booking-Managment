@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { BookingTable } from "@/components/booking/booking-table";
 import { BookingDetailDialog } from "@/components/booking/booking-detail-dialog";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ContentLoader } from "@/components/ui/content-loader";
 import { formatCurrency } from "@/lib/utils";
 import type { Booking, DashboardStats } from "@/types";
 import { toast } from "sonner";
@@ -68,14 +68,7 @@ export default function SuperAdminDashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-8 w-48" />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-24" />)}
-        </div>
-      </div>
-    );
+    return <ContentLoader label="Loading super admin dashboard..." size="lg" />;
   }
 
   const chartData = [
