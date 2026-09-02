@@ -165,7 +165,39 @@ export default function AdminBookingsManagementPage() {
           booking={selectedBooking}
           open={!!selectedBooking}
           onOpenChange={(open) => !open && setSelectedBooking(null)}
-          onBookingUpdated={loadBookings}
+          onApprove={async (id, reason) => {
+            const res = await fetch(`/api/bookings/${id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ status: "approved", reason }),
+            });
+            if (res.ok) {
+              setSelectedBooking(null);
+              await loadBookings();
+            }
+          }}
+          onReject={async (id, reason) => {
+            const res = await fetch(`/api/bookings/${id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ status: "rejected", reason }),
+            });
+            if (res.ok) {
+              setSelectedBooking(null);
+              await loadBookings();
+            }
+          }}
+          onCancel={async (id, reason) => {
+            const res = await fetch(`/api/bookings/${id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ status: "cancelled", reason }),
+            });
+            if (res.ok) {
+              setSelectedBooking(null);
+              await loadBookings();
+            }
+          }}
         />
       )}
     </div>

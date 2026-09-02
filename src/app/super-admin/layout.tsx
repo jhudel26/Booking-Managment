@@ -3,7 +3,7 @@ import { getProfile } from "@/lib/auth/session";
 import { canAccessSuperAdmin } from "@/lib/auth/permissions";
 import { DashboardNav, superAdminNavItems } from "@/components/layout/dashboard-nav";
 
-export default async function SuperAdminLayout({ children }: LayoutProps<"/super-admin">) {
+export default async function SuperAdminLayout({ children }: { children: React.ReactNode }) {
   const profile = await getProfile();
 
   if (!profile) {

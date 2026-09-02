@@ -2,9 +2,8 @@ import { redirect } from "next/navigation";
 import { getProfile } from "@/lib/auth/session";
 import { canAccessAdmin } from "@/lib/auth/permissions";
 import { DashboardNav, getPermissionBasedNavItems } from "@/components/layout/dashboard-nav";
-import type { LayoutProps } from "@/types/layout";
 
-export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const profile = await getProfile();
 
   if (!profile || !canAccessAdmin(profile)) {
