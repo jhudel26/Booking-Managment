@@ -102,6 +102,8 @@ export const BOOKING_STATUS_LABELS: Record<BookingStatus | "available", string> 
   cancelled: "Cancelled",
 };
 
+export const STATUS_LABELS = BOOKING_STATUS_LABELS;
+
 export const ROLE_LABELS: Record<UserRole, string> = {
   user: "User",
   admin: "Admin",
