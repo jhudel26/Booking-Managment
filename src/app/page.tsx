@@ -9,7 +9,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
 import { getDateString } from "@/lib/booking/time";
 import type { Booking } from "@/types";
-import { Circle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 
@@ -56,9 +55,7 @@ export default function HomePage() {
             transition={{ delay: 0.1, duration: 0.3 }}
             className="flex items-center gap-3"
           >
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Circle className="w-4 h-4 text-primary-foreground" />
-            </div>
+            <img src="/favicon.svg" alt="Rimreserve" className="w-8 h-8" />
             <h1 className="text-lg font-bold">
               Rimreserve
             </h1>
@@ -163,9 +160,7 @@ export default function HomePage() {
         className="border-t py-4 text-center text-sm text-muted-foreground shrink-0"
       >
         <div className="flex items-center justify-center gap-2">
-          <div className="w-5 h-5 bg-primary rounded flex items-center justify-center">
-            <Circle className="w-2.5 h-2.5 text-primary-foreground" />
-          </div>
+          <img src="/favicon.svg" alt="Rimreserve" className="w-5 h-5" />
           <p>Rimreserve &copy; {new Date().getFullYear()}</p>
         </div>
       </motion.footer>
