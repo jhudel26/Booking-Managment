@@ -5,7 +5,6 @@ import Link from "next/link";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { BookingTable } from "@/components/booking/booking-table";
 import { BookingDetailDialog } from "@/components/booking/booking-detail-dialog";
-import { AdminPermissionsManager } from "@/components/admin/admin-permissions-manager";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Booking } from "@/types";
@@ -19,14 +18,11 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { createClient } from "@/lib/supabase/client";
 
 export default function AdminDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
-  const [canGrantPermissions, setCanGrantPermissions] = useState(false);
-  const [profileLoading, setProfileLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
@@ -38,28 +34,6 @@ export default function AdminDashboard() {
       }
     }
     load();
-  }, []);
-
-  useEffect(() => {
-    async function loadProfile() {
-      try {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("can_grant_admin_permissions")
-            .eq("id", user.id)
-            .single();
-          if (profile) {
-            setCanGrantPermissions(profile.can_grant_admin_permissions || false);
-          }
-        }
-      } finally {
-        setProfileLoading(false);
-      }
-    }
-    loadProfile();
   }, []);
 
   const pending = bookings.filter((b) => b.status === "pending").length;
@@ -182,16 +156,6 @@ export default function AdminDashboard() {
           />
         </motion.div>
       </motion.div>
-
-      {!profileLoading && canGrantPermissions && (
-        <motion.div
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.3 }}
-        >
-          <AdminPermissionsManager />
-        </motion.div>
-      )}
 
       <BookingDetailDialog
         booking={selectedBooking}
