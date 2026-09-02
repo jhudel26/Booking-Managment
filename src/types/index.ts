@@ -12,6 +12,7 @@ export interface Profile {
   can_create_admin?: boolean | null;
   can_approve_bookings?: boolean | null;
   can_manage_rates?: boolean | null;
+  can_grant_admin_permissions?: boolean | null;
   created_at: string;
   updated_at: string;
 }

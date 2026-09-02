@@ -19,6 +19,8 @@ import {
   LineChart,
   Line,
 } from "recharts";
+import { motion } from "framer-motion";
+import { Circle } from "lucide-react";
 
 export default function SuperAdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -111,24 +113,65 @@ export default function SuperAdminDashboard() {
   const pendingBookings = bookings.filter((b) => b.status === "pending").slice(0, 5);
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="space-y-6"
+    >
+      <motion.div
+        initial={{ y: -10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1, duration: 0.3 }}
+        className="flex items-center gap-3"
+      >
+        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <Circle className="w-4 h-4 text-primary-foreground" />
+        </div>
+        <h1 className="text-2xl font-bold">
+          Dashboard
+        </h1>
+      </motion.div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Bookings" value={stats?.total || 0} />
-        <StatCard title="Pending" value={stats?.pending || 0} />
-        <StatCard title="Approved" value={stats?.approved || 0} />
-        <StatCard title="Rejected" value={stats?.rejected || 0} />
-      </div>
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.3 }}
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.15 }}>
+          <StatCard title="Total Bookings" value={stats?.total || 0} />
+        </motion.div>
+        <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.15 }}>
+          <StatCard title="Pending" value={stats?.pending || 0} />
+        </motion.div>
+        <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.15 }}>
+          <StatCard title="Approved" value={stats?.approved || 0} />
+        </motion.div>
+        <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.15 }}>
+          <StatCard title="Rejected" value={stats?.rejected || 0} />
+        </motion.div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <StatCard
-          title="Total Revenue"
-          value={formatCurrency(stats?.revenue || 0)}
-          description="From approved bookings"
-        />
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.3 }}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+      >
+        <motion.div whileHover={{ scale: 1.005 }} transition={{ duration: 0.15 }}>
+          <StatCard
+            title="Total Revenue"
+            value={formatCurrency(stats?.revenue || 0)}
+            description="From approved bookings"
+          />
+        </motion.div>
 
-        <div className="rounded-xl border bg-card p-6">
+        <motion.div
+          whileHover={{ scale: 1.005 }}
+          transition={{ duration: 0.15 }}
+          className="rounded-lg border bg-card p-6 shadow-sm"
+        >
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
             Booking Status Overview
           </h3>
@@ -138,14 +181,23 @@ export default function SuperAdminDashboard() {
               <XAxis dataKey="name" className="text-xs" />
               <YAxis className="text-xs" />
               <Tooltip />
-              <Bar dataKey="value" fill="#2563eb" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="rounded-xl border bg-card p-6">
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.3 }}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+      >
+        <motion.div
+          whileHover={{ scale: 1.005 }}
+          transition={{ duration: 0.15 }}
+          className="rounded-lg border bg-card p-6 shadow-sm"
+        >
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
             Bookings Overview (Last 6 Months)
           </h3>
@@ -155,12 +207,16 @@ export default function SuperAdminDashboard() {
               <XAxis dataKey="month" className="text-xs" />
               <YAxis className="text-xs" />
               <Tooltip />
-              <Line type="monotone" dataKey="count" stroke="#2563eb" strokeWidth={2} />
+              <Line type="monotone" dataKey="count" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: "hsl(var(--primary))" }} />
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
 
-        <div className="rounded-xl border bg-card p-6">
+        <motion.div
+          whileHover={{ scale: 1.005 }}
+          transition={{ duration: 0.15 }}
+          className="rounded-lg border bg-card p-6 shadow-sm"
+        >
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-4">
             Today's Bookings
           </h3>
@@ -173,26 +229,36 @@ export default function SuperAdminDashboard() {
           ) : (
             <div className="space-y-2 max-h-48 overflow-y-auto">
               {todayBookings.map((booking) => (
-                <div key={booking.id} className="flex items-center justify-between p-2 border rounded">
+                <motion.div
+                  key={booking.id}
+                  initial={{ opacity: 0, x: -5 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center justify-between p-2 border rounded hover:bg-accent/50 transition-colors"
+                >
                   <div>
                     <p className="text-sm font-medium">{booking.requester_name}</p>
                     <p className="text-xs text-muted-foreground">{booking.start_time} - {booking.end_time}</p>
                   </div>
                   <span className={`text-xs px-2 py-1 rounded ${
-                    booking.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-gray-100 text-gray-800'
+                    booking.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' :
+                    booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100' :
+                    'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100'
                   }`}>
                     {booking.status}
                   </span>
-                </div>
+                </motion.div>
               ))}
             </div>
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      <div>
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.3 }}
+      >
         <h2 className="text-lg font-semibold mb-4">Pending Approvals</h2>
         {pendingBookings.length === 0 ? (
           <p className="text-muted-foreground text-sm">No pending reservations.</p>
@@ -202,7 +268,7 @@ export default function SuperAdminDashboard() {
             onView={setSelectedBooking}
           />
         )}
-      </div>
+      </motion.div>
 
       <BookingDetailDialog
         booking={selectedBooking}
@@ -213,6 +279,6 @@ export default function SuperAdminDashboard() {
         onReject={(id, reason) => handleAction(id, "reject", reason)}
         onCancel={(id, reason) => handleAction(id, "cancel", reason)}
       />
-    </div>
+    </motion.div>
   );
 }

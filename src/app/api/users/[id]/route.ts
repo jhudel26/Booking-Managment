@@ -30,7 +30,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   // Allow direct permission updates without full schema validation
   const allowedUpdates = [
     'is_active', 'full_name', 'role', 'is_active',
-    'can_create_admin', 'can_approve_bookings', 'can_manage_rates'
+    'can_create_admin', 'can_approve_bookings', 'can_manage_rates', 'can_grant_admin_permissions'
   ];
   
   const updateData: Record<string, unknown> = {};
@@ -57,7 +57,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message, details: error }, { status: 500 });
   }
 
   // Log permission changes

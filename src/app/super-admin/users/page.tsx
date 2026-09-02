@@ -92,10 +92,8 @@ export default function UsersPage() {
 
   const togglePermission = async (user: Profile, permission: string, value: boolean) => {
     // Optimistic UI update
-    const updatedUsers = users.map(u => 
-      u.id === user.id ? { ...u, [permission]: value } : u
-    );
-    setUsers(updatedUsers);
+    const previousUsers = [...users];
+    setUsers(users.map(u => u.id === user.id ? { ...u, [permission]: value } : u));
 
     try {
       const res = await fetch(`/api/users/${user.id}`, {
@@ -104,13 +102,14 @@ export default function UsersPage() {
         body: JSON.stringify({ [permission]: value }),
       });
       if (!res.ok) {
-        throw new Error("Failed to update permission");
+        const err = await res.json();
+        throw new Error(err.error || err.details?.message || "Failed to update permission");
       }
       toast.success("Permission updated");
     } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to update permission");
       // Revert on error
-      toast.error("Failed to update permission");
-      await loadUsers();
+      setUsers(previousUsers);
     }
   };
 
@@ -252,6 +251,16 @@ export default function UsersPage() {
                             id={`manage-rates-${user.id}`}
                             checked={user.can_manage_rates || false}
                             onCheckedChange={(checked) => togglePermission(user, 'can_manage_rates', checked)}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between gap-4">
+                          <Label htmlFor={`grant-permissions-${user.id}`} className="text-sm cursor-pointer">
+                            Grant Admin Permissions
+                          </Label>
+                          <Switch
+                            id={`grant-permissions-${user.id}`}
+                            checked={user.can_grant_admin_permissions || false}
+                            onCheckedChange={(checked) => togglePermission(user, 'can_grant_admin_permissions', checked)}
                           />
                         </div>
                       </div>

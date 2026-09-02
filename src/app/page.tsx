@@ -11,8 +11,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
 import { getDateString } from "@/lib/booking/time";
 import type { Booking } from "@/types";
-import { LogIn } from "lucide-react";
+import { LogIn, Circle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { motion } from "framer-motion";
 
 export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState(getDateString(new Date()));
@@ -50,57 +51,140 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
+      <motion.header
+        initial={{ y: -20 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      >
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <h1 className="text-lg font-bold">Rimreserve</h1>
-          <div className="flex items-center gap-2">
-            <div className="hidden sm:flex items-center gap-2 mr-4">
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+            className="flex items-center gap-3"
+          >
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <Circle className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <h1 className="text-lg font-bold">
+              Rimreserve
+            </h1>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+            className="flex items-center gap-3"
+          >
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-muted rounded-md">
               <span className="text-sm text-muted-foreground">Current Rate:</span>
-              <span className="font-semibold text-primary">{formatCurrency(pricePerHour)}/hr</span>
+              <span className="font-semibold text-foreground">
+                {formatCurrency(pricePerHour)}/hr
+              </span>
             </div>
             <ThemeToggle />
-          </div>
+            {!isAuthenticated && (
+              <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                <Link href="/login">
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Login
+                </Link>
+              </Button>
+            )}
+          </motion.div>
         </div>
-      </header>
+      </motion.header>
 
       <main className="container mx-auto px-4 py-8 space-y-8 flex-1">
-        <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">RIM|RESERVER</h2>
-          <h3 className="text-xl font-semibold tracking-tight text-primary">BASKETBALL COURT BOOKING SYSTEM</h3>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+          className="text-center space-y-3"
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.3 }}
+            className="inline-block"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+              RIM|RESERVER
+            </h2>
+          </motion.div>
+          <motion.h3
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.3 }}
+            className="text-lg md:text-xl font-semibold text-primary"
+          >
+            BASKETBALL COURT BOOKING SYSTEM
+          </motion.h3>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[600px] lg:min-h-[700px]">
-          <Card className="h-full min-h-[600px] lg:min-h-[700px]">
-            <CardContent className="p-6 h-full min-h-[600px] lg:min-h-[700px]">
-              {loading ? (
-                <Skeleton className="h-[600px] lg:h-[700px] w-full" />
-              ) : (
-                <CalendarView
-                  selectedDate={selectedDate}
-                  onDateSelect={setSelectedDate}
-                  bookings={bookings}
-                />
-              )}
-            </CardContent>
-          </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.4 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-[600px] lg:min-h-[700px]"
+        >
+          <motion.div
+            whileHover={{ scale: 1.005 }}
+            transition={{ duration: 0.15 }}
+          >
+            <Card className="h-full min-h-[600px] lg:min-h-[700px] border shadow-sm">
+              <CardContent className="p-6 h-full min-h-[600px] lg:min-h-[700px]">
+                {loading ? (
+                  <Skeleton className="h-[600px] lg:h-[700px] w-full" />
+                ) : (
+                  <CalendarView
+                    selectedDate={selectedDate}
+                    onDateSelect={setSelectedDate}
+                    bookings={bookings}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
 
-          <DaySchedule
-            date={selectedDate}
-            bookings={bookings}
-            loading={loading}
-          />
-        </div>
+          <motion.div
+            whileHover={{ scale: 1.005 }}
+            transition={{ duration: 0.15 }}
+          >
+            <DaySchedule
+              date={selectedDate}
+              bookings={bookings}
+              loading={loading}
+            />
+          </motion.div>
+        </motion.div>
 
-        <div className="text-center text-muted-foreground max-w-4xl mx-auto px-4">
-          <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.3 }}
+          className="text-center text-muted-foreground max-w-4xl mx-auto px-4 py-6"
+        >
+          <p className="text-sm md:text-base">
             View availability and see scheduled bookings. Select a date to view the daily schedule.
           </p>
-        </div>
+        </motion.div>
       </main>
 
-      <footer className="border-t py-3 text-center text-sm text-muted-foreground shrink-0">
-        <p>Rimreserve &copy; {new Date().getFullYear()}</p>
-      </footer>
+      <motion.footer
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.9, duration: 0.3 }}
+        className="border-t py-4 text-center text-sm text-muted-foreground shrink-0"
+      >
+        <div className="flex items-center justify-center gap-2">
+          <div className="w-5 h-5 bg-primary rounded flex items-center justify-center">
+            <Circle className="w-2.5 h-2.5 text-primary-foreground" />
+          </div>
+          <p>Rimreserve &copy; {new Date().getFullYear()}</p>
+        </div>
+      </motion.footer>
     </div>
   );
 }

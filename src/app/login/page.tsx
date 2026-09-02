@@ -15,6 +15,8 @@ import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { toast } from "sonner";
 import { getDashboardPath } from "@/lib/auth/permissions";
 import type { UserRole } from "@/types";
+import { motion } from "framer-motion";
+import { Circle } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -66,52 +68,133 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="absolute top-4 right-4">
+    <div className="min-h-screen flex flex-col bg-background">
+      <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
       </div>
 
       <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Rimreserve Admin</CardTitle>
-            <CardDescription>Sign in to manage Rimreserve</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" {...register("email")} autoComplete="email" />
-                {errors.email && (
-                  <p className="text-xs text-destructive">{errors.email.message}</p>
-                )}
-              </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md"
+        >
+          <Card className="border shadow-lg">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+              className="p-8"
+            >
+              <CardHeader className="text-center pb-6">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.3, duration: 0.4, type: "spring" }}
+                  className="mx-auto mb-4 w-12 h-12 bg-primary rounded-xl flex items-center justify-center"
+                >
+                  <Circle className="w-6 h-6 text-primary-foreground" />
+                </motion.div>
+                <CardTitle className="text-2xl font-bold">
+                  Rimreserve Admin
+                </CardTitle>
+                <CardDescription className="text-base mt-2">
+                  Sign in to manage Rimreserve
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4, duration: 0.3 }}
+                    className="space-y-2"
+                  >
+                    <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      {...register("email")}
+                      autoComplete="email"
+                      className="h-10"
+                    />
+                    {errors.email && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-xs text-destructive"
+                      >
+                        {errors.email.message}
+                      </motion.p>
+                    )}
+                  </motion.div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" {...register("password")} autoComplete="current-password" />
-                {errors.password && (
-                  <p className="text-xs text-destructive">{errors.password.message}</p>
-                )}
-              </div>
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5, duration: 0.3 }}
+                    className="space-y-2"
+                  >
+                    <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      {...register("password")}
+                      autoComplete="current-password"
+                      className="h-10"
+                    />
+                    {errors.password && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-xs text-destructive"
+                      >
+                        {errors.password.message}
+                      </motion.p>
+                    )}
+                  </motion.div>
 
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Signing in..." : "Sign In"}
-              </Button>
-            </form>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6, duration: 0.3 }}
+                  >
+                    <Button
+                      type="submit"
+                      className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                      disabled={loading}
+                    >
+                      {loading ? "Signing in..." : "Sign In"}
+                    </Button>
+                  </motion.div>
+                </form>
 
-            <div className="mt-4 text-center text-sm space-y-2">
-              <Link href="/forgot-password" className="text-primary hover:underline">
-                Forgot password?
-              </Link>
-              <p>
-                <Link href="/" className="text-muted-foreground hover:underline">
-                  Back to calendar
-                </Link>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.7, duration: 0.3 }}
+                  className="mt-6 text-center text-sm space-y-2"
+                >
+                  <Link
+                    href="/forgot-password"
+                    className="text-primary hover:underline transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
+                  <p className="text-muted-foreground">
+                    <Link
+                      href="/"
+                      className="hover:text-foreground transition-colors"
+                    >
+                      Back to calendar
+                    </Link>
+                  </p>
+                </motion.div>
+              </CardContent>
+            </motion.div>
+          </Card>
+        </motion.div>
       </div>
     </div>
   );

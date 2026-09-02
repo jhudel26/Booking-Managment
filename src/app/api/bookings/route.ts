@@ -117,13 +117,14 @@ export async function POST(request: Request) {
     .single();
 
   if (error) {
+    console.error("Booking insert error:", error);
     if (error.message.includes("conflict")) {
       return NextResponse.json(
         { error: "This time slot conflicts with an existing reservation" },
         { status: 409 }
       );
     }
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message, details: error }, { status: 500 });
   }
 
   await logAudit("reservation_created", "reservation", booking.id, user.id, {
