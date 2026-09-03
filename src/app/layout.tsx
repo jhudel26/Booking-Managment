@@ -22,35 +22,62 @@ export const metadata: Metadata = {
     default: "Rimreserve | Professional Booking Management",
     template: "%s | Rimreserve",
   },
+
   description:
     "Rimreserve - Professional booking management system. View availability and book time slots with real-time calendar.",
+
+  // Favicon is automatically detected from:
+  // src/app/icon.png
+  //
+  // Do NOT add:
+  // icon: "/favicon.ico"
+  //
+  // Apple touch icon is kept if the file exists in /public.
   icons: {
-    icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
+
   manifest: "/site.webmanifest",
+
   openGraph: {
     title: "Rimreserve",
-    description: "Professional booking management system for time slot reservations.",
+    description:
+      "Professional booking management system for time slot reservations.",
     type: "website",
   },
+
   robots: {
     index: true,
     follow: true,
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: LayoutProps<"/">) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} h-full`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} h-full`}
+    >
       <body className="min-h-full antialiased">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <QueryProvider>
             <SiteStatusProvider minDisplayMs={2000}>
               <HydrationLoader>
                 {children}
               </HydrationLoader>
-              <Toaster richColors position="top-right" />
+
+              <Toaster
+                richColors
+                position="top-right"
+              />
             </SiteStatusProvider>
           </QueryProvider>
         </ThemeProvider>
