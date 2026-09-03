@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   description:
     "Rimreserve - Professional booking management system. View availability and book time slots with real-time calendar.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
